@@ -7,6 +7,6 @@ This section is here to elucidate the current status of all the members of the t
 ### Venkat
 
 1. ~~Initialize the repository and create the first basic template of the project.~~
-2. Work on creating a basic gridworld example as an experiment to figure out what interfaces we might need to implement as we move forward and add more complexity to the gridworld example.
+2. Work on creating a basic gridworld example as an experiment to figure out what interfaces we might need to implement as we move forward and add more complexity to the gridworld example. The code for this can be found under Projects/SimpleGridworldExample.
 
 ### Karthik
