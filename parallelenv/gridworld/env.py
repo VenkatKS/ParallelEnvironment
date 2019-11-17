@@ -8,7 +8,10 @@ class GridMap(AbstractMap):
     PutMapUpdate = namedtuple("PutMapUpdate", "agent")
     DelMapUpdate = namedtuple("DelMapUpdate", "agent")
 
+    # create new Put update : PutMapUpdate(agent=agent)
+
     def __init__(self, width, height):
+        super(GridMap, self).__init__()
         self.width = width
         self.height = height
 
@@ -48,3 +51,6 @@ class GridMap(AbstractMap):
 
     def getAgentMapInfo(self, agent):
         return self._agent_to_pos[agent]
+
+    def getObservation(self):
+        raise NotImplementedError("getObservation not implemented for GridMap!")

@@ -18,6 +18,7 @@ class AbstractMap(ABC):
     """
 
     def __init__(self, use_gpu=False):
+        super(AbstractMap, self).__init__()
         # Currently don't have GPU support
         self.use_gpu = use_gpu
 
@@ -54,6 +55,18 @@ class AbstractMap(ABC):
         ----------
         agent: object, required
             The agent's self object, used for referencing the environment
+        Returns
+        -------
+        agent_map_info: object, required
+            Map-specific agent information (for instance, for a 2D grid world, this would be the position)
+        """
+        pass
+
+    @abstractmethod
+    def getObservation(self):
+        """Observation returned to the client, at the end of step.
+
+        Can be identity, or something more complex, depending on the environment.
         """
         pass
 
