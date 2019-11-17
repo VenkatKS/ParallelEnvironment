@@ -23,7 +23,7 @@ class AbstractMap(ABC):
 
     @abstractmethod
     def doTaggedMapUpdates(self, tag, mapUpdatesList):
-        """Interface provided by subclasses for concrete map implementation.
+        """Interface supplied by subclasses for concrete map implementation.
 
         Tags are defined by the subclasses, with the understanding that map updates
         corresponding to different tags are independent and can be executed
@@ -45,11 +45,23 @@ class AbstractMap(ABC):
         """
         pass
 
+    @abstractmethod
+    def getAgentMapInfo(self, agent):
+        """Interface supplied by subclasses allowing agents to
+        reference their own map information.
+
+        Parameters
+        ----------
+        agent: object, required
+            The agent's self object, used for referencing the environment
+        """
+        pass
+
     def doMapUpdates(self, tagToMapUpdatesMap):
         """Method performing dispatch of tags to implementation.
 
         This is meant to support parallel dispatch."""
-        __doSequentialMapUpdates__(tagToMapUpdatesMap)
+        self.__doSequentialMapUpdates__(tagToMapUpdatesMap)
 
     def __doSequentialMapUpdates__(self, tagToMapUpdatesMap):
         """Sequential implementation for tagged map updates.
@@ -57,5 +69,5 @@ class AbstractMap(ABC):
         This internal method is meant to be used for parity checking."""
 
         for tag, mapUpdatesList in tagToMapUpdatesMap.items():
-            doTaggedMapUpdates(tag, mapUpdatesList)
+            self.doTaggedMapUpdates(tag, mapUpdatesList)
 
