@@ -1,5 +1,5 @@
 from enum import Enum
-from abstract_agent import AbstractAgent
+from core.abstract_agent import AbstractAgent
 
 class Agent(AbstractAgent):
     class AgentActions(Enum):
@@ -25,10 +25,12 @@ class Agent(AbstractAgent):
         RIGHT = 3
 
     def __SetupActionSpace(self):
-        self.__action_space = [s for s in AgentActions]
+        self.__action_space = [s for s in self.AgentActions]
 
-    def __init__(self, active_map, default_orientation = Orientations.UP, default_energy = 100):
+    def __init__(self, active_map, default_orientation = None, default_energy = 100):
         super(Agent, self).__init__()
+        if default_orientation is None:
+            default_orientation = Agent.Orientations.UP
         self.__SetupActionSpace()
         self.orientation = default_orientation
         self.energy = default_energy
@@ -42,11 +44,6 @@ class Agent(AbstractAgent):
         # The input to this function is the output of the model. In that,
         # it is a single integer that specifies the action that the agent
         # has to take to ensure that it is able to make a proper move.
-        if not isinstance(action, int):
-            raise AssertionError(   "Agent input expects a single int action" \
-                                    " that the model has requested this" \
-                                    "agent perform.")
-
         if not action in self.__action_space:
             raise AssertionError (  "Agent has been provided an invalid" \
                                     " action space action.")
@@ -62,30 +59,30 @@ class Agent(AbstractAgent):
         # there are PUT and DEL actions.
 
         # Retrieve the current position of the agent within the active map
-        current_pos = self.active_map.getAgentMapInfo(self)["position"]
+        current_pos = self.active_map.getAgentMapInfo(self)
 
         map_actions = {}
         for action in action_sequence:
-            if (action == AgentActions.NO_MOVE):
+            if (action == Agent.AgentActions.NO_MOVE):
                 # The agent has decided to make no map-oriented moves
                 pass
-            elif (action == AgentActions.TURN_UP):
+            elif (action == Agent.AgentActions.TURN_UP):
                 # The agent is modifying an internal state and has no map updates
                 # that it needs to report back to the map
-                self.orientation = Orientations.UP
-            elif (action == AgentActions.TURN_DOWN):
+                self.orientation = Agent.Orientations.UP
+            elif (action == Agent.AgentActions.TURN_DOWN):
                 # The agent is modifying an internal state and has no map updates
                 # that it needs to report back to the map
-                self.orientation = Orientations.DOWN
-            elif (action == AgentActions.TURN_LEFT):
+                self.orientation = Agent.Orientations.DOWN
+            elif (action == Agent.AgentActions.TURN_LEFT):
                 # The agent is modifying an internal state and has no map updates
                 # that it needs to report back to the map
-                self.orientation = Orientations.LEFT
-            elif (action == AgentActions.TURN_RIGHT):
+                self.orientation = Agent.Orientations.LEFT
+            elif (action == Agent.AgentActions.TURN_RIGHT):
                 # The agent is modifying an internal state and has no map updates
                 # that it needs to report back to the map
-                self.orientation = Orientations.RIGHT
-            elif (action == AgentActions.MOVE_FORWARD):
+                self.orientation = Agent.Orientations.RIGHT
+            elif (action == Agent.AgentActions.MOVE_FORWARD):
                 # Delete the agent from the current location
                 if not current_pos in map_actions:
                     map_actions[current_pos] = []
@@ -94,14 +91,14 @@ class Agent(AbstractAgent):
 
                 # Add the movement based on the current orientation of the
                 # agent.
-                if (self.orientation == Orientations.UP):
-                    current_pos["y"] -= 1
-                elif (self.orientation == Orientations.DOWN):
-                    current_pos["y"] += 1
-                elif (self.orientation == Orientations.LEFT):
-                    current_pos["x"] -= 1
-                elif (self.orientation == Orientations.RIGHT):
-                    current_pos["x"] += 1
+                if (self.orientation == Agent.Orientations.UP):
+                    current_pos.y -= 1
+                elif (self.orientation == Agent.Orientations.DOWN):
+                    current_pos.y += 1
+                elif (self.orientation == Agent.Orientations.LEFT):
+                    current_pos.x -= 1
+                elif (self.orientation == Agent.Orientations.RIGHT):
+                    current_pos.x += 1
                 else:
                     raise AssertionError("Invalid Orientation")
 
@@ -113,6 +110,3 @@ class Agent(AbstractAgent):
             else:
                 raise AssertionError("An invalid action has been specified")
         return map_actions
-                
-
-

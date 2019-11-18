@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import gym
+from collections import defaultdict
 from abc import ABC, abstractmethod
 
 class AbstractEnv(ABC, gym.Env):
@@ -62,23 +63,23 @@ class AbstractEnv(ABC, gym.Env):
         super(AbstractEnv, self).__init__()
 
     def step(self, action):
-        self.__doSequentialStep__(action)
+        return self.__doSequentialStep__(action)
 
     def __doSequentialStep__(self, actions):
         # Invoke agent actions
         # Also, reduce agent-actionUpdates
         agent_list = self.getAgents()
-        agent_action_updates = dict()
-        for agent, action in zip(agent_list, actions)
+        agent_action_updates = defaultdict(list)
+        for agent, action in zip(agent_list, actions):
             updates = agent.doAction(action)
-            for update in updates:
-                agent_action_updates[update.agent] = update.action
+            for agent, action_list in updates.items():
+                agent_action_updates[agent].extend(action_list)
 
         # Invoke agent action updates
         # Also, reduce tag-mapUpdates
         tag_map_updates = dict()
         for agent, action_updates in agent_action_updates.items():
-            map_update = agent.doActionCollate(action_updates)
+            map_update = agent.doActionAgentCollate(action_updates)
             for update in map_update:
                 tag_map_updates[update.tag] = update.map_update
         del agent_action_updates
@@ -91,10 +92,10 @@ class AbstractEnv(ABC, gym.Env):
 
         # Get reward for all the agents
         agent_rewards = []
-        for idx, agent in enumerate(agent_list):
-            agent_rewards[idx] = current_map.getAgentReward(agent)
+        for agent in agent_list:
+            agent_rewards.append(self.getAgentReward(agent))
 
-        return current_map.getObservation(), agent_rewards, self.isTerminal(), _
+        return current_map.getObservation(), agent_rewards, self.isTerminal(), None
 
     def reset(self):
         raise NotImplementedError("Haven't implemented raise yet")

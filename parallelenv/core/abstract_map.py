@@ -70,6 +70,10 @@ class AbstractMap(ABC):
         """
         pass
 
+    @abstractmethod
+    def registerAgent(self, agent, method='random', **kwargs):
+        """Method to register agent."""
+
     def doMapUpdates(self, tagToMapUpdatesMap):
         """Method performing dispatch of tags to implementation.
 

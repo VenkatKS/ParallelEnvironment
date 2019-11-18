@@ -1,3 +1,5 @@
-from gridworld.env import GridMap
+from gridworld.env import RandomRewardGridEnv
+from gridworld.agent import Agent
 
-sample_map = GridMap(width=10, height=20)
+x = RandomRewardGridEnv()
+print (x.step([Agent.AgentActions.TURN_UP, Agent.AgentActions.TURN_UP]))
