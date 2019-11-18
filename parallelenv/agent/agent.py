@@ -27,9 +27,7 @@ class Agent(AbstractAgent):
     def __SetupActionSpace(self):
         self.__action_space = [s for s in AgentActions]
 
-    def __init__(self, active_map, default_orientation = Orientations.UP, \
-            default_energy = 100):
-
+    def __init__(self, active_map, default_orientation = Orientations.UP, default_energy = 100):
         super(Agent, self).__init__()
         self.__SetupActionSpace()
         self.orientation = default_orientation
@@ -37,12 +35,10 @@ class Agent(AbstractAgent):
 
         self.active_map = active_map
 
-    @override
     def getPossibleActions(self):
         return self.__action_space
     
-    @override
-    self doAction(self, action):
+    def doAction(self, action):
         # The input to this function is the output of the model. In that,
         # it is a single integer that specifies the action that the agent
         # has to take to ensure that it is able to make a proper move.
@@ -60,7 +56,6 @@ class Agent(AbstractAgent):
         # try to squash the actions here.
         return {self: [action]}
 
-    @override
     def doActionAgentCollate(self, action_sequence):
         # Given an action space to perform, need to convert it into the
         # proper representation that the map can understand. In this case,
