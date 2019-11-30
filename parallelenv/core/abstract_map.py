@@ -33,7 +33,8 @@ class AbstractMap(ABC):
 
         If there is shared state that needs to be updated for each tag, the
         implementation is responsible for ensuring correctness under concurrent
-        updates.
+        updates. Furthermore, any checking for invalid tags also has to be
+        performed by the supplied class.
 
         Parameters
         ----------
@@ -73,6 +74,7 @@ class AbstractMap(ABC):
     @abstractmethod
     def registerAgent(self, agent, method='random', **kwargs):
         """Method to register agent."""
+        pass
 
     def doMapUpdates(self, tagToMapUpdatesMap):
         """Method performing dispatch of tags to implementation.

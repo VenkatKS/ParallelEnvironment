@@ -3,6 +3,8 @@ import gym
 from collections import defaultdict
 from abc import ABC, abstractmethod
 
+from config import Log
+
 class AbstractEnv(ABC, gym.Env):
     """Base class for defining the reward structure over different maps, and
     for managing agents interacting in the environment.
@@ -63,6 +65,7 @@ class AbstractEnv(ABC, gym.Env):
         super(AbstractEnv, self).__init__()
 
     def step(self, action):
+        Log.debug("=================== New Step ===================")
         return self.__doSequentialStep__(action)
 
     def __doSequentialStep__(self, actions):
@@ -74,26 +77,30 @@ class AbstractEnv(ABC, gym.Env):
             updates = agent.doAction(action)
             for agent, action_list in updates.items():
                 agent_action_updates[agent].extend(action_list)
+        Log.debug("Agent->action_updates are %s" % (agent_action_updates))
 
         # Invoke agent action updates
         # Also, reduce tag-mapUpdates
-        tag_map_updates = dict()
+        tag_map_updates = defaultdict(list)
         for agent, action_updates in agent_action_updates.items():
             map_update = agent.doActionAgentCollate(action_updates)
-            for update in map_update:
-                tag_map_updates[update.tag] = update.map_update
+            Log.debug("Agent %s update %s" % (hex(id(agent)), map_update))
+            for tag, update_list in map_update.items():
+                tag_map_updates[tag].extend(update_list)
         del agent_action_updates
+        Log.debug("Tag->map_updates are %s" % (tag_map_updates))
 
         # Invoke map updates
         current_map = self.getCurrentMap()
-        for tag, map_update in tag_map_updates.items():
-            current_map.doMapUpdates(tag, map_update)
+        current_map.doMapUpdates(tag_map_updates)
         del tag_map_updates
 
         # Get reward for all the agents
         agent_rewards = []
         for agent in agent_list:
             agent_rewards.append(self.getAgentReward(agent))
+        Log.debug("Agent rewards are %s"
+                   % ([(hex(id(agent)), agent_rewards[i]) for i, agent in enumerate(agent_list)]))
 
         return current_map.getObservation(), agent_rewards, self.isTerminal(), None
 

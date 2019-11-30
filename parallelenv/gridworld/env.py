@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import gym
+
+from config import Log
 from core.abstract_env import AbstractEnv
 from gridworld.map import GridMap
 from gridworld.agent import Agent
@@ -12,6 +14,7 @@ class RandomRewardGridEnv(AbstractEnv):
         for i in range(num_agents):
             self.agents.append(Agent(active_map=self.map))
             self.map.registerAgent(self.agents[-1])
+        Log.debug("New env created with agents %s" % (self.agents))
 
     def getCurrentMap(self):
         return self.map

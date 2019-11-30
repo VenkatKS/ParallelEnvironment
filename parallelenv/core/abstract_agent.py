@@ -1,7 +1,6 @@
 import abc
 
-class AbstractAgent():
-    __metaclass__ = abc.ABCMeta
+class AbstractAgent(abc.ABC):
     # The abstract class for the Agent. 
     # The goal is to provide a framework for the agent's functionality within
     # the scope of a abstract environment.
@@ -32,6 +31,3 @@ class AbstractAgent():
         # take due to the environment and the actions of the other agents,
         # and generate a series of map updates that the map can understand.
         pass
-
-
-
