@@ -4,6 +4,7 @@ from collections import defaultdict
 from abc import ABC, abstractmethod
 
 from config import Log
+from core.recorder import Recorder
 
 class AbstractEnv(ABC, gym.Env):
     """Base class for defining the reward structure over different maps, and
@@ -63,46 +64,63 @@ class AbstractEnv(ABC, gym.Env):
 
     def __init__(self):
         super(AbstractEnv, self).__init__()
+        self.__recorder = Recorder()
+        Log.debug("recorder %s" % (self.__recorder))
 
     def step(self, action):
         Log.debug("=================== New Step ===================")
-        return self.__doSequentialStep__(action)
+
+        self.__recorder.record('step')
+        ret_val = self.__doSequentialStep__(action)
+        self.__recorder.record('step')
+
+        return ret_val
 
     def __doSequentialStep__(self, actions):
         # Invoke agent actions
         # Also, reduce agent-actionUpdates
         agent_list = self.getAgents()
         agent_action_updates = defaultdict(list)
+        self.__recorder.record('agent-action')
         for agent, action in zip(agent_list, actions):
             updates = agent.doAction(action)
             for agent, action_list in updates.items():
                 agent_action_updates[agent].extend(action_list)
+        self.__recorder.record('agent-action')
         Log.debug("Agent->action_updates are %s" % (agent_action_updates))
 
         # Invoke agent action updates
         # Also, reduce tag-mapUpdates
         tag_map_updates = defaultdict(list)
+        self.__recorder.record('agent-action-update')
         for agent, action_updates in agent_action_updates.items():
             map_update = agent.doActionAgentCollate(action_updates)
-            Log.debug("Agent %s update %s" % (hex(id(agent)), map_update))
             for tag, update_list in map_update.items():
                 tag_map_updates[tag].extend(update_list)
+        self.__recorder.record('agent-action-update')
         del agent_action_updates
         Log.debug("Tag->map_updates are %s" % (tag_map_updates))
 
         # Invoke map updates
         current_map = self.getCurrentMap()
+        self.__recorder.record('map-update')
         current_map.doMapUpdates(tag_map_updates)
+        self.__recorder.record('map-update')
         del tag_map_updates
 
         # Get reward for all the agents
         agent_rewards = []
+        self.__recorder.record('agent-reward')
         for agent in agent_list:
             agent_rewards.append(self.getAgentReward(agent))
+        self.__recorder.record('agent-reward')
         Log.debug("Agent rewards are %s"
                    % ([(hex(id(agent)), agent_rewards[i]) for i, agent in enumerate(agent_list)]))
 
         return current_map.getObservation(), agent_rewards, self.isTerminal(), None
+
+    def dump_timing(self, filename, mode='w'):
+        self.__recorder.dump_csv_by_run(filename, mode)
 
     def reset(self):
         raise NotImplementedError("Haven't implemented raise yet")

@@ -47,10 +47,11 @@ class Agent(AbstractAgent):
     def getPossibleActions(self):
         return self.__action_space
     
-    def doAction(self, action):
+    def doAction(self, action_int):
         # The input to this function is the output of the model. In that,
         # it is a single integer that specifies the action that the agent
         # has to take to ensure that it is able to make a proper move.
+        action = Agent.AgentActions(action_int)
         if not action in self.__action_space:
             raise AssertionError (  "Agent has been provided an invalid" \
                                     " action space action.")
@@ -90,9 +91,6 @@ class Agent(AbstractAgent):
                 # that it needs to report back to the map
                 self.orientation = Agent.Orientations.RIGHT
             elif (action == Agent.AgentActions.FORWARD):
-                # Delete the agent from the current location
-                map_actions[current_pos].append(self.active_map.DelMapUpdate(self))
-
                 # Add the movement based on the current orientation of the
                 # agent.
                 new_x, new_y = current_pos.x, current_pos.y
@@ -107,8 +105,12 @@ class Agent(AbstractAgent):
                 else:
                     raise AssertionError("Invalid Orientation")
 
+                # If the new position is valid, move
                 new_pos = self.active_map.GridPosition(new_x, new_y)
-                map_actions[new_pos].append(self.active_map.PutMapUpdate(self))
+                if self.active_map.isValidPosition(new_pos):
+                    map_actions[new_pos].append(self.active_map.PutMapUpdate(self))
+                    # Delete the agent from the current location
+                    map_actions[current_pos].append(self.active_map.DelMapUpdate(self))
             else:
                 raise AssertionError("An invalid action has been specified")
         return map_actions

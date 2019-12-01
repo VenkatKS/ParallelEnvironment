@@ -9,6 +9,7 @@ from gridworld.agent import Agent
 class RandomRewardGridEnv(AbstractEnv):
 
     def __init__(self, width=10, height=10, num_agents=2):
+        super(RandomRewardGridEnv, self).__init__()
         self.map = GridMap(width=10, height=10)
         self.agents = list()
         for i in range(num_agents):
