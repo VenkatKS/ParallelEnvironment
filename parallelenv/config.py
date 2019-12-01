@@ -3,7 +3,7 @@ import logging
 import sys
 
 # Modify this variable to change the log level
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.WARNING
 FORMAT = "%(levelname)s [%(asctime)s] [%(filename)s:%(funcName)s:%(lineno)d] %(message)s"
 TIME_FORMAT = "%H:%M:%S"
 
