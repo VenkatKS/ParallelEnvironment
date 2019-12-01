@@ -9,6 +9,8 @@ parser.add_argument('--height', type=int, default=1000, required=False)
 parser.add_argument('--width', type=int, default=1000, required=False)
 parser.add_argument('--num_agents', type=int, default=int(1e5), required=False)
 parser.add_argument('--num_steps', type=int, default=100, required=False)
+parser.add_argument('--filename', type=str, required=True)
+parser.add_argument('--filemode', type=str, choices=['w', 'a'], required=False)
 
 args = parser.parse_args()
 
@@ -21,4 +23,4 @@ for i in range(args.num_steps):
     if i % 100 == 0:
         print ("On step %d" % (i))
     x.step([random.randint(0, 5), random.randint(0, 5)])
-x.dump_timing('test.csv')
+x.dump_timing(args.filename, mode=args.filemode)
