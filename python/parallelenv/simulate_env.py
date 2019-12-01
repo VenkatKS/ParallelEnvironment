@@ -10,7 +10,7 @@ parser.add_argument('--width', type=int, default=1000, required=False)
 parser.add_argument('--num_agents', type=int, default=int(1e5), required=False)
 parser.add_argument('--num_steps', type=int, default=100, required=False)
 parser.add_argument('--filename', type=str, required=True)
-parser.add_argument('--filemode', type=str, choices=['w', 'a'], required=False)
+parser.add_argument('--filemode', type=str, default="w", choices=['w', 'a'], required=False)
 
 args = parser.parse_args()
 
