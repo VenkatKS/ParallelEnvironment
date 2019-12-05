@@ -44,8 +44,16 @@ void GridWorldMap::doSeqTaggedMapUpdates(GridPosition *tag,\
          * A valid put operation is one in which the given agent isn't
          * already in some other spot
          */
-        break;
 
+        /* We will first move the agent if he already exists in another spot */
+        if (isAgentInMap(current_update->agent) == true) {
+          /* Remove the agent from his old spot */
+          RemoveAgentFromRecords(current_update->agent);
+        }
+
+        /* Add the agent to the new spot */
+        AddAgentToRecords(current_update->agent, tag);
+        break;
       case 1:
         /*
          * DEL OPERATION

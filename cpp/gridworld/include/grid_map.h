@@ -20,6 +20,9 @@ class GridWorldMap : public AbstractMap {
     /* Remove the requested agent from both maps */
     virtual void RemoveAgentFromRecords(AbstractAgent *agent);
 
+    /* Add the agent to the current records */
+    virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos);
+
   public:
     /* Generic constructr for the gridworld map. */
     GridWorldMap(uint32_t width, uint32_t height);

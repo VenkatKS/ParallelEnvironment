@@ -146,6 +146,16 @@ class AbstractMap {
 
       return;
     }
+
+    virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos) {
+      /* Don't double add the agent to the map records */
+      if (isAgentInMap(agent) == true)
+        return;
+
+      agent_to_pos[agent] = pos;
+      pos_to_agents[pos].push_back(agent);
+      return;
+    }
 };
 
 #endif
