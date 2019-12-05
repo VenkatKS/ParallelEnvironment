@@ -51,8 +51,8 @@ class AbstractMap {
      *    List of implementation-defined map-update operations. It is up to the
      *    business logic to implement the updates.
      */
-    virtual void doTaggedMapUpdates() = 0;
-  
+    void doTaggedMapUpdates(AbstractPosition active_position, \
+                            std::vector<AbstractUpdate*> map_updates);
     /*
      * Interface supplied by subclasses allowing agents to
      * reference their own map information.
@@ -68,7 +68,7 @@ class AbstractMap {
      * Map-specific agent information (for instance, for a 2D grid world, \
      * this would be the position)
      */
-    virtual std::unordered_map<AbstractAgent, AbstractGridPosition> getAgentMapInfo() = 0;
+    virtual std::unordered_map<AbstractAgent, AbstractPosition> getAgentMapInfo() = 0;
 
     /*
      * Observation returned to the client, at the end of step.
@@ -87,12 +87,29 @@ class AbstractMap {
      *
      * This is meant to support parallel dispatch.
      */
-    void doMapUpdates(std::unordered_map<AbstractGridPosition *, AbstractUpdates *> list_of_updates) {
+    void doMapUpdates(std::unordered_map<AbstractPosition *, AbstractUpdate *> list_of_updates) {
         return;
     }
-    
+
+  /* Simple helper functions */
   private:
-    void doSequentialMapUpdates();
+    /* ==== MEMBERS ==== */
+
+    /* Have a mapping for each agent to its position */
+    std::unordered_map<AbstractAgent *, AbstractPosition *> agent_to_pos;
+    
+    /* ==== METHODS ==== */
+  
+    /* Sequentially update the agents */
+    virtual void doSeqTaggedMapUpdates(AbstractPosition tag,\
+                                         std::vector<AbstractUpdate*> map_updates) = 0;
+    
+    /* See if the requested agent is currently present in this map */
+    virtual bool isAgentInMap(AbstractAgent *agent) {
+      return (agent_to_pos.count(agent) > 0);
+    }
+
+
 };
 
 #endif

@@ -3,9 +3,7 @@
 
 #include "abstract_agent.h"
 
-class AbstractGridPosition {
-  float x;
-  float y;
+class AbstractPosition {
 };
 
 #endif

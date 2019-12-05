@@ -1,0 +1,6 @@
+*.pyc
+*.swp
+*.swo
+*.csv
+*.gch
+*.o

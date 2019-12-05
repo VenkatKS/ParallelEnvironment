@@ -80,6 +80,8 @@ class AbstractMap(ABC):
         """Method performing dispatch of tags to implementation.
 
         This is meant to support parallel dispatch."""
+        import pdb
+        pdb.set_trace()
         self.__doSequentialMapUpdates__(tagToMapUpdatesMap)
 
     def __doSequentialMapUpdates__(self, tagToMapUpdatesMap):

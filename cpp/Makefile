@@ -1,6 +1,15 @@
-simple_gridworld:
-	g++ -Icore/include -Igridworld/include gridworld/main.cpp gridworld/gridmap.cpp -o
+.DEFAULT_GOAL := all
 
-all: simple_gridworld
+infra.o:
+	g++ --std=c++11 -Iinfra/include -c infra/*.cpp -o bin/infra.o
+
+simple_gridworld: infra.o
+	g++ --std=c++11 -Icore/include -Iinfra/include -Igridworld/include \
+	  bin/infra.o\
+	  gridworld/main.cpp \
+	  gridworld/gridmap.cpp\
+	  -o bin/run.o\
+
+all: infra.o simple_gridworld
 
 

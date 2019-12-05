@@ -3,9 +3,10 @@
 
 #include "abstract_grid_position.h"
 
-class GridPosition : AbstractGridPosition {
-  float x;
-  float y;
+class GridPosition : public AbstractPosition {
+  public:
+    float x;
+    float y;
 };
 
 #endif

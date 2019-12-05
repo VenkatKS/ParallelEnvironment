@@ -73,6 +73,8 @@ class GridMap(AbstractMap):
             self._agent_to_pos[put_update.agent] = tag
 
     def getAgentMapInfo(self, agent):
+        import pdb
+        pdb.set_trace()
         return self._agent_to_pos[agent]
 
     def getObservation(self):

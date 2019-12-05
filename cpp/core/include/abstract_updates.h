@@ -3,8 +3,13 @@
 
 #include "abstract_agent.h"
 
-class AbstractUpdates {
-  AbstractAgent agent;
+class AbstractUpdate {
+  public:
+
+  AbstractAgent *agent;
+
+  /* Provides an unique identifier to quickly see what kind of update this is */
+  virtual uint32_t UpdateType() = 0;
 };
 
 #endif
