@@ -11,11 +11,14 @@ class GridWorldMap : public AbstractMap {
     uint32_t height;
     uint32_t width;
 
-    void doSeqTaggedMapUpdates(GridPosition tag,\
+    void doSeqTaggedMapUpdates(GridPosition *tag,\
                                          std::vector<AbstractUpdate*> map_updates);
     
     /* Not overriden from parent. Just checks the map */
     virtual bool isAgentInMap(AbstractAgent *agent);
+    
+    /* Remove the requested agent from both maps */
+    virtual void RemoveAgentFromRecords(AbstractAgent *agent);
 
   public:
     /* Generic constructr for the gridworld map. */
@@ -26,8 +29,9 @@ class GridWorldMap : public AbstractMap {
      * grid?
      */
     bool isValidPosition(GridPosition grid_pos);
-    void doTaggedMapUpdates(GridPosition active_position, \
+    void doTaggedMapUpdates(GridPosition *active_position, \
                             std::vector<AbstractUpdate*> map_updates);
+    virtual AbstractPosition *getAgentPosition(AbstractAgent *agent);
 };
 
 #endif

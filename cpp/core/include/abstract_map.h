@@ -51,7 +51,7 @@ class AbstractMap {
      *    List of implementation-defined map-update operations. It is up to the
      *    business logic to implement the updates.
      */
-    void doTaggedMapUpdates(AbstractPosition active_position, \
+    void doTaggedMapUpdates(AbstractPosition *active_position, \
                             std::vector<AbstractUpdate*> map_updates);
     /*
      * Interface supplied by subclasses allowing agents to
@@ -97,19 +97,55 @@ class AbstractMap {
 
     /* Have a mapping for each agent to its position */
     std::unordered_map<AbstractAgent *, AbstractPosition *> agent_to_pos;
+    std::unordered_map<AbstractPosition *, std::vector<AbstractAgent *> > pos_to_agents;
     
     /* ==== METHODS ==== */
   
     /* Sequentially update the agents */
-    virtual void doSeqTaggedMapUpdates(AbstractPosition tag,\
+    virtual void doSeqTaggedMapUpdates(AbstractPosition *tag,\
                                          std::vector<AbstractUpdate*> map_updates) = 0;
     
     /* See if the requested agent is currently present in this map */
-    virtual bool isAgentInMap(AbstractAgent *agent) {
+    inline virtual bool isAgentInMap(AbstractAgent *agent) {
       return (agent_to_pos.count(agent) > 0);
     }
 
+    virtual bool isValidPosition(AbstractPosition *position) {
+      return (pos_to_agents.count(position) > 0);
+    }
 
+    virtual AbstractPosition *getAgentPosition(AbstractAgent *agent) {
+      if (isAgentInMap(agent) == false) {
+        return nullptr;
+      }
+
+      return agent_to_pos[agent];
+    }
+
+    virtual bool isAgentInPos(AbstractAgent *agent, AbstractPosition *position){
+      return isAgentInMap(agent) && isValidPosition(position) && \
+        (std::count(pos_to_agents[position].begin(), pos_to_agents[position].end(),
+                    agent) > 0);
+    }
+
+    inline virtual void RemoveAgentFromRecords(AbstractAgent *agent) {
+      if (isAgentInMap(agent) == false) {
+        return;
+      }
+
+      AbstractPosition *loc = agent_to_pos[agent];
+
+      /* Remove the agent from the agent->pos mapping */
+      agent_to_pos.erase(agent);
+      
+      /* Remove the agent from the pos->agent mapping */
+      pos_to_agents[loc].erase(std::remove(pos_to_agents[loc].begin(), \
+            pos_to_agents[loc].end(), agent), pos_to_agents[loc].end());
+
+      delete agent;
+
+      return;
+    }
 };
 
 #endif

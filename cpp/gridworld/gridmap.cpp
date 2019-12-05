@@ -15,7 +15,7 @@ bool GridWorldMap::isValidPosition(GridPosition grid_pos) {
   return true;
 }
 
-void GridWorldMap::doTaggedMapUpdates(GridPosition active_position, \
+void GridWorldMap::doTaggedMapUpdates(GridPosition *active_position, \
     std::vector<AbstractUpdate*> map_updates) {
 
   /* Sanitize the input and see if there are any errors. */
@@ -29,7 +29,7 @@ void GridWorldMap::doTaggedMapUpdates(GridPosition active_position, \
   return;
 }
 
-void GridWorldMap::doSeqTaggedMapUpdates(GridPosition tag,\
+void GridWorldMap::doSeqTaggedMapUpdates(GridPosition *tag,\
                                          std::vector<AbstractUpdate*> map_updates)
 {
   /* Sequentially iterate and update the map */
@@ -38,8 +38,14 @@ void GridWorldMap::doSeqTaggedMapUpdates(GridPosition tag,\
 
     switch (current_update->UpdateType()) {
       case 0:
-        /* PUT */
+        /*
+         * PUT OPERATION
+         *
+         * A valid put operation is one in which the given agent isn't
+         * already in some other spot
+         */
         break;
+
       case 1:
         /*
          * DEL OPERATION
@@ -51,10 +57,23 @@ void GridWorldMap::doSeqTaggedMapUpdates(GridPosition tag,\
 
         /* Ensure the relevant agent is in the grid */
         if (isAgentInMap(current_update->agent) == false) {
-          continue;
+          break;
         }
 
+        /* Ensure that this agent is in this position */
+        /* This function could return a nullptr if the agent is not in the 
+         * scene, but we've already checked for it, so no need to catch corner
+         * case.
+         */
+        if (getAgentPosition(current_update->agent)->Compare(tag) == false) {
+          break;
+        }
+
+        /* Deregister the agent from the records maintained by this map */
+        /* Agent will be deallocated by the function call */
+        RemoveAgentFromRecords(current_update->agent);
         break;
+
       default:
         Logger::Report ("Unidentified Update Provided.", Logger::WARN);
         break;

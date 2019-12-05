@@ -4,6 +4,8 @@
 #include "abstract_agent.h"
 
 class AbstractPosition {
+  public:
+    virtual bool Compare(AbstractPosition *second) = 0;
 };
 
 #endif
