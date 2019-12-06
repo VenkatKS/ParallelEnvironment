@@ -20,7 +20,6 @@ All subclasses are required to implement virtual methods.
 #include "abstract_updates.h"
 #include "utils.h"
 
-
 enum AgentMethod {
   RANDOM, DETERMINISTIC
 };
@@ -28,8 +27,6 @@ enum AgentMethod {
 class AbstractMap {
   private:
   public:
-    AbstractMap(bool use_gpu=false);
-    
     /*
      * Interface supplied by subclasses for concrete map implementation.
 
@@ -52,8 +49,8 @@ class AbstractMap {
      *    List of implementation-defined map-update operations. It is up to the
      *    business logic to implement the updates.
      */
-    void doTaggedMapUpdates(AbstractPosition *active_position, \
-                            std::vector<AbstractUpdate*> map_updates);
+    virtual void doTaggedMapUpdates(AbstractPosition *active_position, \
+                            std::vector<AbstractUpdate*> map_updates) = 0;
     /*
      * Interface supplied by subclasses allowing agents to
      * reference their own map information.
@@ -69,16 +66,14 @@ class AbstractMap {
      * Map-specific agent information (for instance, for a 2D grid world, \
      * this would be the position)
      */
-    virtual std::unordered_map<AbstractAgent, AbstractPosition> getAgentMapInfo() = 0;
+    virtual std::unordered_map<AbstractAgent *, AbstractPosition *> *getAgentMapInfo() = 0;
 
     /*
      * Observation returned to the client, at the end of step.
      *
      * Can be identity, or something more complex, depending on the environment.
      */
-    virtual AbstractMap *getObservation() {
-      return this;
-    }
+    virtual AbstractMap *getObservation();
 
     /* Method to register agent. */
     virtual void RegisterAgent(AbstractAgent *agent, AgentMethod method) = 0;
@@ -88,74 +83,33 @@ class AbstractMap {
      *
      * This is meant to support parallel dispatch.
      */
-    void doMapUpdates(std::unordered_map<AbstractPosition *, AbstractUpdate *> list_of_updates) {
-        return;
-    }
+    void doMapUpdates(std::unordered_map<AbstractPosition *, AbstractUpdate *> list_of_updates);
 
   /* Simple helper functions */
-  private:
     /* ==== MEMBERS ==== */
-
+  protected:
     /* Have a mapping for each agent to its position */
     std::unordered_map<AbstractAgent *, AbstractPosition *> agent_to_pos;
     std::unordered_map<AbstractPosition *, std::vector<AbstractAgent *> > pos_to_agents;
-    
+  public:
     /* ==== METHODS ==== */
   
     /* Sequentially update the agents */
     virtual void doSeqTaggedMapUpdates(AbstractPosition *tag,\
-                                         std::vector<AbstractUpdate*> map_updates) = 0;
+                                         std::vector<AbstractUpdate*> &map_updates) = 0;
     
     /* See if the requested agent is currently present in this map */
-    inline virtual bool isAgentInMap(AbstractAgent *agent) {
-      return (agent_to_pos.count(agent) > 0);
-    }
+    virtual bool isAgentInMap(AbstractAgent *agent);
 
-    virtual bool isValidPosition(AbstractPosition *position) {
-      return (pos_to_agents.count(position) > 0);
-    }
+    virtual bool isValidPosition(AbstractPosition *position);
 
-    virtual AbstractPosition *getAgentPosition(AbstractAgent *agent) {
-      if (isAgentInMap(agent) == false) {
-        return nullptr;
-      }
+    virtual AbstractPosition *getAgentPosition(AbstractAgent *agent);
 
-      return agent_to_pos[agent];
-    }
+    virtual bool isAgentInPos(AbstractAgent *agent, AbstractPosition *position);
 
-    virtual bool isAgentInPos(AbstractAgent *agent, AbstractPosition *position){
-      return isAgentInMap(agent) && isValidPosition(position) && \
-        (std::count(pos_to_agents[position].begin(), pos_to_agents[position].end(),
-                    agent) > 0);
-    }
+    virtual void RemoveAgentFromRecords(AbstractAgent *agent);
 
-    inline virtual void RemoveAgentFromRecords(AbstractAgent *agent) {
-      if (isAgentInMap(agent) == false) {
-        return;
-      }
-
-      AbstractPosition *loc = agent_to_pos[agent];
-
-      /* Remove the agent from the agent->pos mapping */
-      agent_to_pos.erase(agent);
-      
-      /* Remove the agent from the pos->agent mapping */
-      pos_to_agents[loc].erase(std::remove(pos_to_agents[loc].begin(), \
-            pos_to_agents[loc].end(), agent), pos_to_agents[loc].end());
-
-      delete agent;
-      return;
-    }
-
-    virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos) {
-      /* Don't double add the agent to the map records */
-      if (isAgentInMap(agent) == true)
-        return;
-
-      agent_to_pos[agent] = pos;
-      pos_to_agents[pos].push_back(agent);
-      return;
-    }
+    virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos);
 };
 
 #endif

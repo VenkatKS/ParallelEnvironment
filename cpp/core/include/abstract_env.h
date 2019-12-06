@@ -4,12 +4,10 @@
 #include "abstract_map.h"
 
 class AbstractEnv {
-  private:
-  protected:
   public:
-    virtual AbstractMap getCurrentMap() = 0;
-    virtual std::vector<AbstractAgent> getAgents() = 0;
-    virtual uint64_t getAgentRewards() = 0;
+    virtual AbstractMap *getCurrentMap() = 0;
+    virtual std::vector<AbstractAgent *> getAgents() = 0;
+    virtual uint64_t getAgentRewards(AbstractAgent *agent) = 0;
     virtual bool isTerminal() = 0;
 };
   

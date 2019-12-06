@@ -5,6 +5,8 @@
 #include "logger.h"
 #include "grid_map_updates.h"
 
+#include <unordered_map>
+
 bool GridWorldMap::isValidPosition(GridPosition grid_pos) {
   /* Ensure the provided coordinates is within the board's height and width*/
   if (grid_pos.x < 0 || grid_pos.x >= width
@@ -15,7 +17,7 @@ bool GridWorldMap::isValidPosition(GridPosition grid_pos) {
   return true;
 }
 
-void GridWorldMap::doTaggedMapUpdates(GridPosition *active_position, \
+void GridWorldMap::doTaggedMapUpdates(AbstractPosition *active_position, \
     std::vector<AbstractUpdate*> map_updates) {
 
   /* Sanitize the input and see if there are any errors. */
@@ -29,8 +31,8 @@ void GridWorldMap::doTaggedMapUpdates(GridPosition *active_position, \
   return;
 }
 
-void GridWorldMap::doSeqTaggedMapUpdates(GridPosition *tag,\
-                                         std::vector<AbstractUpdate*> map_updates)
+void GridWorldMap::doSeqTaggedMapUpdates(AbstractPosition *tag,\
+                                         std::vector<AbstractUpdate*> &map_updates)
 {
   /* Sequentially iterate and update the map */
   for (int update_idx = 0; update_idx < map_updates.size(); update_idx++) {
@@ -111,8 +113,6 @@ void GridWorldMap::RegisterAgent(AbstractAgent *agent, AgentMethod method) {
       /* 
        * Create A New GridWorldPosition object and register it with the 
        * memory manager
-       *
-       * FIXME
        */
 
       /* FIXME: Find a way to keep track of this allocation */
@@ -123,8 +123,8 @@ void GridWorldMap::RegisterAgent(AbstractAgent *agent, AgentMethod method) {
       return;
 }
 
-
-
-
-
+std::unordered_map<AbstractAgent *, AbstractPosition *> *GridWorldMap::getAgentMapInfo()
+{
+  return &agent_to_pos;
+}
 

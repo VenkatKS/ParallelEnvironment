@@ -5,36 +5,33 @@
 #include "grid_position.h"
 #include "grid_map_updates.h"
 
+
+#include <unordered_map>
+
 class GridWorldMap : public AbstractMap {
   private:
     /* The board's dimensions */
     uint32_t height;
     uint32_t width;
 
-    void doSeqTaggedMapUpdates(GridPosition *tag,\
-                                         std::vector<AbstractUpdate*> map_updates);
+    virtual void doSeqTaggedMapUpdates(AbstractPosition *tag,\
+                                         std::vector<AbstractUpdate*> &map_updates);
     
-    /* Not overriden from parent. Just checks the map */
-    virtual bool isAgentInMap(AbstractAgent *agent);
-    
-    /* Remove the requested agent from both maps */
-    virtual void RemoveAgentFromRecords(AbstractAgent *agent);
-
-    /* Add the agent to the current records */
-    virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos);
+    virtual std::unordered_map<AbstractAgent *, AbstractPosition *> *getAgentMapInfo();
 
   public:
     /* Generic constructr for the gridworld map. */
-    GridWorldMap(uint32_t width, uint32_t height);
+    GridWorldMap(uint32_t awidth, uint32_t aheight) : width(awidth), height(aheight) {} 
+    ~GridWorldMap() = default;
   
     /* 
      * Is the provided gridposition a valid position for this instantianted
      * grid?
      */
     bool isValidPosition(GridPosition grid_pos);
-    void doTaggedMapUpdates(GridPosition *active_position, \
+
+    virtual void doTaggedMapUpdates(AbstractPosition *active_position, \
                             std::vector<AbstractUpdate*> map_updates);
-    virtual AbstractPosition *getAgentPosition(AbstractAgent *agent);
 
     /* Method to register agent. */
     virtual void RegisterAgent(AbstractAgent *agent, AgentMethod method);
