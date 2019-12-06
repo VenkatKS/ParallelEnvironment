@@ -87,9 +87,43 @@ void GridWorldMap::doSeqTaggedMapUpdates(GridPosition *tag,\
         break;
     }
   }
-
   return;
 }
+
+
+
+void GridWorldMap::RegisterAgent(AbstractAgent *agent, AgentMethod method) {
+      uint32_t x;
+      uint32_t y;
+
+      if (method == AgentMethod::RANDOM) {
+        /* Random registering of the agent */
+        std::vector<uint32_t> rand_int;
+        RandUtils::GetEngine()->UniformRandomIntegers(0, width, 1, rand_int);
+        x = rand_int.back();
+        rand_int.pop_back();
+
+        RandUtils::GetEngine()->UniformRandomIntegers(0, height, 1, rand_int);
+        y = rand_int.back();
+        rand_int.pop_back();
+      }
+
+      /* 
+       * Create A New GridWorldPosition object and register it with the 
+       * memory manager
+       *
+       * FIXME
+       */
+
+      /* FIXME: Find a way to keep track of this allocation */
+      GridPosition *new_position = new GridPosition(x, y);
+      
+      AddAgentToRecords(agent, new_position);
+
+      return;
+}
+
+
 
 
 

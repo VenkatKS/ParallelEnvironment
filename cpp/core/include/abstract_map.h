@@ -18,6 +18,7 @@ All subclasses are required to implement virtual methods.
 
 #include "abstract_grid_position.h"
 #include "abstract_updates.h"
+#include "utils.h"
 
 
 enum AgentMethod {
@@ -80,7 +81,7 @@ class AbstractMap {
     }
 
     /* Method to register agent. */
-    virtual void registerAgent(AbstractAgent agent, AgentMethod method) = 0;
+    virtual void RegisterAgent(AbstractAgent *agent, AgentMethod method) = 0;
   
     /*
      * Method performing dispatch of tags to implementation.
@@ -143,7 +144,6 @@ class AbstractMap {
             pos_to_agents[loc].end(), agent), pos_to_agents[loc].end());
 
       delete agent;
-
       return;
     }
 

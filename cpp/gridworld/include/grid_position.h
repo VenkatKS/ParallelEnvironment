@@ -5,8 +5,10 @@
 
 class GridPosition : public AbstractPosition {
   public:
-    float x;
-    float y;
+    uint32_t x;
+    uint32_t y;
+
+    GridPosition(uint32_t x_coordinate, uint32_t y_coordinate) : x(x_coordinate), y(y_coordinate) {} 
 
     virtual bool Compare (AbstractPosition *second) {
       GridPosition *other = dynamic_cast<GridPosition *>(second);

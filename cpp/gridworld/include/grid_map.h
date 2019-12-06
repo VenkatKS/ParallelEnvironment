@@ -35,6 +35,11 @@ class GridWorldMap : public AbstractMap {
     void doTaggedMapUpdates(GridPosition *active_position, \
                             std::vector<AbstractUpdate*> map_updates);
     virtual AbstractPosition *getAgentPosition(AbstractAgent *agent);
+
+    /* Method to register agent. */
+    virtual void RegisterAgent(AbstractAgent *agent, AgentMethod method);
 };
+
+
 
 #endif
