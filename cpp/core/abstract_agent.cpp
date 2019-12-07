@@ -7,7 +7,7 @@ void AbstractAgent::RegisterAction (std::string action_name, uint32_t enumerated
 
   /* If the specified action is already in the dictionary, don't allow */
   if(it != registered_actions.end()) {
-    throw ActionAlreadyRegisteredException();
+    throw std::string("Action already registered");
   }
 
   registered_actions[action_name] = enumerated_action;

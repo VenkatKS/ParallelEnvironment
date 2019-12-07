@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := all
 
-FRAMEWORK_SRC_LIST = core/abstract_agent.cpp core/abstract_map.cpp
+FRAMEWORK_SRC_LIST = core/abstract_agent.cpp core/abstract_map.cpp core/abstract_env.cpp
 FRAMEWORK_INC_LIST = -Icore/include
-FRAMEWORK_FLAGS = -shared
+FRAMEWORK_FLAGS = -shared -fpic
 FRAMEWORK_OUT_PATH = bin/framework.a
 
 LOGGER_SRC_LIST = infra/logger.cpp 
@@ -39,7 +39,7 @@ simple_gridworld: logger utils framework
 	@echo Building Simple Gridworld Example
 	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(SIMPLE_INC_LIST)\
 	  $(SIMPLE_DEPS) $(SIMPLE_SRC_LIST)\
-	  -o bin/run.o\
+	  -o bin/run\
 
 all: simple_gridworld
 

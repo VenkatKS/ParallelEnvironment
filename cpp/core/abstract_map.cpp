@@ -1,5 +1,7 @@
 #include "abstract_map.h"
 
+#include <algorithm>
+
 
 bool AbstractMap::isAgentInMap(AbstractAgent *agent) {
   return (agent_to_pos.count(agent) > 0);
@@ -38,7 +40,6 @@ void AbstractMap::RemoveAgentFromRecords(AbstractAgent *agent) {
   pos_to_agents[loc].erase(std::remove(pos_to_agents[loc].begin(), \
         pos_to_agents[loc].end(), agent), pos_to_agents[loc].end());
 
-  delete agent;
   return;
 }
 
@@ -57,6 +58,9 @@ AbstractMap *AbstractMap::getObservation() {
   return this;
 }
 
-void AbstractMap::doMapUpdates(std::unordered_map<AbstractPosition *, AbstractUpdate *> list_of_updates) {
-    return;
+void AbstractMap::doMapUpdates(std::unordered_map<AbstractPosition *, std::vector<AbstractUpdate *>> list_of_updates) {
+    // FIXME: This is the sequential implementation of dispatch
+    for (auto& kv_pair : list_of_updates) {
+        this->doTaggedMapUpdates(kv_pair.first, kv_pair.second);
+    }
 }

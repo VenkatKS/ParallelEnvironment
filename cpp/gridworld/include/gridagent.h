@@ -41,7 +41,7 @@ class GridAgent : public AbstractAgent {
 
   public:
     virtual uint32_t GetPossibleActions();
-    virtual std::vector<uint32_t> doAction(uint32_t action_id);
+    virtual std::unordered_map<AbstractAgent*, std::vector<uint32_t>> doAction(uint32_t action_id);
     virtual std::unordered_map<AbstractPosition *, AbstractUpdate *> doActionAgentCollate(std::vector<uint32_t> agent_actions);
 };
 

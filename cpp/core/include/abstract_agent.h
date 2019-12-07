@@ -12,15 +12,6 @@
 class AbstractUpdate;
 class AbstractPosition;
 
-class ActionAlreadyRegisteredException {
-  public:
-    ActionAlreadyRegisteredException() {
-    }
-
-    ~ActionAlreadyRegisteredException() {
-    }
-};
-
 class AbstractAgent {
   protected:
 
@@ -32,8 +23,6 @@ class AbstractAgent {
      * Allow for the user agent to register the series of actions they want
      * to actuate. Likely comes from policy distribution specified by the user.
      *
-     * Throws:
-     *          1. ActionAlreadyRegisteredException: The action was already registered.
      */
     void RegisterAction (std::string action_name, uint32_t enumerated_action);
 
@@ -47,7 +36,8 @@ class AbstractAgent {
     virtual ~AbstractAgent() = default;
 
     virtual uint32_t GetPossibleActions() = 0;
-    virtual std::vector<uint32_t> doAction(uint32_t action_id) = 0;
+    // Returns a mapping between the agent to apply the action update to
+    virtual std::unordered_map<AbstractAgent*, std::vector<uint32_t>> doAction(uint32_t action_id) = 0;
 
     virtual std::unordered_map<AbstractPosition *, AbstractUpdate *> doActionAgentCollate(std::vector<uint32_t> agent_actions) = 0;
 };

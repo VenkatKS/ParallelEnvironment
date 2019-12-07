@@ -83,7 +83,7 @@ class AbstractMap {
      *
      * This is meant to support parallel dispatch.
      */
-    void doMapUpdates(std::unordered_map<AbstractPosition *, AbstractUpdate *> list_of_updates);
+    void doMapUpdates(std::unordered_map<AbstractPosition *, std::vector<AbstractUpdate*>> list_of_updates);
 
   /* Simple helper functions */
     /* ==== MEMBERS ==== */

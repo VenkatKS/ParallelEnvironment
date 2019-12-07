@@ -14,7 +14,7 @@ GridAgent::~GridAgent() {
   return;
 }
 
-std::vector<uint32_t> GridAgent::doAction(uint32_t action) {
+std::unordered_map<AbstractAgent*, std::vector<uint32_t>> GridAgent::doAction(uint32_t action) {
   /* Verify if the agent is proper */
   if (action >= GridAgentActions::COUNT) {
     throw "Invalid action provided.";
@@ -27,7 +27,7 @@ std::vector<uint32_t> GridAgent::doAction(uint32_t action) {
   std::vector<uint32_t> action_vector;
   action_vector.push_back(action);
 
-  return action_vector;
+  return std::unordered_map<AbstractAgent*, std::vector<uint32_t>>{{this, action_vector}};
 }
 
 std::unordered_map<AbstractPosition *, AbstractUpdate *> GridAgent::doActionAgentCollate(std::vector<uint32_t> agent_actions) {

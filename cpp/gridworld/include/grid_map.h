@@ -21,7 +21,7 @@ class GridWorldMap : public AbstractMap {
     virtual AbstractPosition *getAgentMapInfo(AbstractAgent *agent);
 
   public:
-    /* Generic constructr for the gridworld map. */
+    /* Generic constructor for the gridworld map. */
     GridWorldMap(uint32_t awidth, uint32_t aheight) : width(awidth), height(aheight) {} 
     ~GridWorldMap() = default;
   

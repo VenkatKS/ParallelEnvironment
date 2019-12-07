@@ -35,6 +35,3 @@ uint64_t GridEnv::getAgentRewards(AbstractAgent *agent) {
 bool GridEnv::isTerminal() {
   return false;
 }
-
-
-

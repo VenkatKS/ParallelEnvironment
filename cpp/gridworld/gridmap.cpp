@@ -22,14 +22,6 @@ bool GridWorldMap::isValidPosition(AbstractPosition *grid_position) {
 
 void GridWorldMap::doTaggedMapUpdates(AbstractPosition *active_position, \
     std::vector<AbstractUpdate*> map_updates) {
-
-  /* Sanitize the input and see if there are any errors. */
-  for (int update_idx = 0; update_idx < map_updates.size(); update_idx++) {
-    Logger::Report("Invalid position for agent update.", Logger::LERR);
-    Logger::DumpPipes(Logger::ALL);
-    exit(-1);
-  }
-
   doSeqTaggedMapUpdates(active_position, map_updates);
   return;
 }
