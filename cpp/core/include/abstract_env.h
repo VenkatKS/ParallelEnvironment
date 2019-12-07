@@ -6,8 +6,15 @@
 
 using ActionType = uint32_t;
 
+enum EnvBackend {
+    SEQ,
+    OMP
+};
+
 class AbstractEnv {
   public:
+    AbstractEnv (EnvBackend backend) : _current_backend(backend) {}
+
     virtual AbstractMap *getCurrentMap() = 0;
     virtual std::vector<AbstractAgent *> getAgents() = 0;
     virtual uint64_t getAgentRewards(AbstractAgent *agent) = 0;
@@ -20,6 +27,7 @@ class AbstractEnv {
     std::vector<uint64_t> step(const std::vector<ActionType>& actions);
 
   private:
+    EnvBackend _current_backend;
     Recorder _run_recorder;
 };
   

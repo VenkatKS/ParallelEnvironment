@@ -2,7 +2,7 @@
 
 FRAMEWORK_SRC_LIST = core/abstract_agent.cpp core/abstract_map.cpp core/abstract_env.cpp
 FRAMEWORK_INC_LIST = -Icore/include
-FRAMEWORK_FLAGS = -shared -fpic
+FRAMEWORK_FLAGS = -shared -fpic -fopenmp
 FRAMEWORK_OUT_PATH = bin/framework.a
 
 LOGGER_SRC_LIST = infra/logger.cpp 

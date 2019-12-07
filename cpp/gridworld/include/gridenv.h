@@ -15,7 +15,9 @@ class GridEnv : public AbstractEnv {
      * width, height, and with the specified number of environments. There 
      * will be width*height number of positions within the GridEnv.
      */
-    GridEnv(uint32_t width, uint32_t height, uint32_t agents);
+    GridEnv(uint32_t width, uint32_t height, uint32_t agents)
+        : GridEnv(width, height, agents, EnvBackend::SEQ) {}
+    GridEnv(uint32_t width, uint32_t height, uint32_t agents, EnvBackend backend);
 
     virtual AbstractMap *getCurrentMap();
     virtual std::vector<AbstractAgent *> getAgents();

@@ -1,6 +1,8 @@
 #include "abstract_env.h"
 #include "logger.h"
 
+#include <omp.h>
+
 std::vector<uint64_t> AbstractEnv::step (const std::vector<ActionType>& actions) {
         const std::vector<AbstractAgent*> agent_list = this->getAgents();
         if (actions.size() != agent_list.size()) {
