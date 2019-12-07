@@ -27,6 +27,9 @@ class AbstractEnv {
     std::vector<uint64_t> step(const std::vector<ActionType>& actions);
 
   private:
+    std::vector<uint64_t> seq_step(const std::vector<ActionType>& actions);
+    std::vector<uint64_t> omp_step(const std::vector<ActionType>& actions);
+
     EnvBackend _current_backend;
     Recorder _run_recorder;
 };
