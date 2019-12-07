@@ -15,7 +15,3 @@ void AbstractAgent::RegisterAction (std::string action_name, uint32_t enumerated
         enumerated_action));
   return;
 }
-
-std::vector<std::pair<std::string, uint32_t> > AbstractAgent::GetPossibleActions() {
-  return paired_actions;
-}

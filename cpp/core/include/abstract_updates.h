@@ -5,7 +5,6 @@
 
 class AbstractUpdate {
   public:
-
   AbstractAgent *agent;
 
   /* Provides an unique identifier to quickly see what kind of update this is */

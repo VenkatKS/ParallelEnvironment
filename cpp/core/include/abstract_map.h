@@ -66,7 +66,7 @@ class AbstractMap {
      * Map-specific agent information (for instance, for a 2D grid world, \
      * this would be the position)
      */
-    virtual std::unordered_map<AbstractAgent *, AbstractPosition *> *getAgentMapInfo() = 0;
+    virtual AbstractPosition *getAgentMapInfo(AbstractAgent *agent) = 0;
 
     /*
      * Observation returned to the client, at the end of step.
@@ -101,7 +101,8 @@ class AbstractMap {
     /* See if the requested agent is currently present in this map */
     virtual bool isAgentInMap(AbstractAgent *agent);
 
-    virtual bool isValidPosition(AbstractPosition *position);
+    virtual bool isValidPosition(AbstractPosition *position) = 0;
+    virtual bool doesPositionHaveAgents(AbstractPosition *position);
 
     virtual AbstractPosition *getAgentPosition(AbstractAgent *agent);
 

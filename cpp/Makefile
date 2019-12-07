@@ -14,7 +14,7 @@ UTILS_INC_LIST = -Iinfra/include
 
 UTILS_OUT_PATH = bin/utils.o
 
-SIMPLE_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gridenv.cpp
+SIMPLE_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gridenv.cpp gridworld/gridagent.cpp
 SIMPLE_INC_LIST = -Igridworld/include
 
 SIMPLE_DEPS = $(LOGGER_OUT_PATH) $(UTILS_OUT_PATH) $(FRAMEWORK_OUT_PATH)

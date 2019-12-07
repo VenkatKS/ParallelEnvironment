@@ -4,13 +4,16 @@
 #include "grid_position.h"
 #include "logger.h"
 #include "grid_map_updates.h"
+#include "gridagent.h"
 
 #include <unordered_map>
 
-bool GridWorldMap::isValidPosition(GridPosition grid_pos) {
+bool GridWorldMap::isValidPosition(AbstractPosition *grid_position) {
+  GridPosition *grid_pos = dynamic_cast<GridPosition*>(grid_position);
+
   /* Ensure the provided coordinates is within the board's height and width*/
-  if (grid_pos.x < 0 || grid_pos.x >= width
-          || grid_pos.y < 0 || grid_pos.y >= height) {
+  if (grid_pos->x < 0 || grid_pos->x >= width
+          || grid_pos->y < 0 || grid_pos->y >= height) {
       return false;
   }
 
@@ -123,8 +126,11 @@ void GridWorldMap::RegisterAgent(AbstractAgent *agent, AgentMethod method) {
       return;
 }
 
-std::unordered_map<AbstractAgent *, AbstractPosition *> *GridWorldMap::getAgentMapInfo()
+AbstractPosition *GridWorldMap::getAgentMapInfo(AbstractAgent *agent)
 {
-  return &agent_to_pos;
+  /* Cast it into an agent of GridWorld */
+  GridAgent *grid_ag = dynamic_cast<GridAgent *> (agent);
+
+  return agent_to_pos[grid_ag];
 }
 

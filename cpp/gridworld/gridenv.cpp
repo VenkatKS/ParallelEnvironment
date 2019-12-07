@@ -8,7 +8,9 @@ GridEnv::GridEnv(uint32_t width, uint32_t height, uint32_t num_agents) {
     /* FIXME: Track allocation for these creations. */
 
     /* Create a new agent */
-    GridAgent *this_agent = new GridAgent();
+    GridAgent *this_agent = new GridAgent(active_map, \
+        GridAgentOrientation::UP, 100);
+
     /* Add the agent to the map by registering it and add it to our list. */
     active_map->RegisterAgent(this_agent, RANDOM);
     agent_list.push_back(this_agent);

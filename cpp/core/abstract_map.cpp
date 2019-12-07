@@ -5,7 +5,7 @@ bool AbstractMap::isAgentInMap(AbstractAgent *agent) {
   return (agent_to_pos.count(agent) > 0);
 }
 
-bool AbstractMap::isValidPosition(AbstractPosition *position) {
+bool AbstractMap::doesPositionHaveAgents(AbstractPosition *position) {
   return (pos_to_agents.count(position) > 0);
 }
 
@@ -19,7 +19,7 @@ AbstractPosition *AbstractMap::getAgentPosition(AbstractAgent *agent) {
 }
 
 bool AbstractMap::isAgentInPos(AbstractAgent *agent, AbstractPosition *position){
-  return isAgentInMap(agent) && isValidPosition(position) && \
+  return isAgentInMap(agent) && doesPositionHaveAgents(position) && \
     (std::count(pos_to_agents[position].begin(), pos_to_agents[position].end(),
                 agent) > 0);
 }

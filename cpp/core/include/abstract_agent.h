@@ -1,9 +1,16 @@
 #ifndef _ABSTRACT_AGENT_H
 #define _ABSTRACT_AGENT_H
 
+#include "abstract_action.h"
+#include "abstract_grid_position.h"
+
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+/* Forward declare */
+class AbstractUpdate;
+class AbstractPosition;
 
 class ActionAlreadyRegisteredException {
   public:
@@ -37,7 +44,12 @@ class AbstractAgent {
      * regarding the actions that it can allow the model to instruct it
      * to perform.
      */
-    virtual std::vector<std::pair<std::string, uint32_t> > GetPossibleActions();
+    virtual ~AbstractAgent() = default;
+
+    virtual uint32_t GetPossibleActions() = 0;
+    virtual std::vector<uint32_t> doAction(uint32_t action_id) = 0;
+
+    virtual std::unordered_map<AbstractPosition *, AbstractUpdate *> doActionAgentCollate(std::vector<uint32_t> agent_actions) = 0;
 };
 
 #endif

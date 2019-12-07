@@ -13,11 +13,12 @@ class GridWorldMap : public AbstractMap {
     /* The board's dimensions */
     uint32_t height;
     uint32_t width;
+  public:
 
     virtual void doSeqTaggedMapUpdates(AbstractPosition *tag,\
                                          std::vector<AbstractUpdate*> &map_updates);
     
-    virtual std::unordered_map<AbstractAgent *, AbstractPosition *> *getAgentMapInfo();
+    virtual AbstractPosition *getAgentMapInfo(AbstractAgent *agent);
 
   public:
     /* Generic constructr for the gridworld map. */
@@ -28,7 +29,7 @@ class GridWorldMap : public AbstractMap {
      * Is the provided gridposition a valid position for this instantianted
      * grid?
      */
-    bool isValidPosition(GridPosition grid_pos);
+    bool isValidPosition(AbstractPosition *grid_pos);
 
     virtual void doTaggedMapUpdates(AbstractPosition *active_position, \
                             std::vector<AbstractUpdate*> map_updates);
