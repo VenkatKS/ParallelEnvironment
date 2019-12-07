@@ -4,8 +4,12 @@
 #include <iostream>
 #include <cstdlib>
 
+constexpr char mode = 'w';
+const std::string filename = "dump.csv";
+const std::vector<std::string> header = {"agent-action","agent-action-update","map-update","reward"};
+
 constexpr int NUM_STEPS = 1000;
-constexpr int NUM_AGENTS = 200;
+constexpr int NUM_AGENTS = 10000;
 
 int main() {
   const uint32_t width=10, height=10, num_agents=NUM_AGENTS;
@@ -23,6 +27,8 @@ int main() {
       // std::cout << std::endl << "Step " << i;
       // for (int reward : rewards) std::cout << " " << reward;
   }
+
+  env.dump_data(header, std::string(filename), mode);
 
   std::cout << std::endl << "Sample run finished";
   return 0;

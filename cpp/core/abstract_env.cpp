@@ -6,10 +6,12 @@ std::vector<uint64_t> AbstractEnv::step (const std::vector<ActionType>& actions)
         if (actions.size() != agent_list.size()) {
             throw "Action list size doesn't match agent list size";
         }
+        _run_recorder.new_run();
 
         // Step 1: Action -> action_updates
         Logger::Report ("stage 1\n", Logger::INFO);
         std::unordered_map<AbstractAgent*, std::vector<uint32_t>> agent_action_updates;
+        _run_recorder.start();
         for (int i = 0; i < agent_list.size(); ++i) {
             const auto& agent = agent_list[i];
 
@@ -24,9 +26,11 @@ std::vector<uint64_t> AbstractEnv::step (const std::vector<ActionType>& actions)
                                      action_list.end());
             }
         }
+        _run_recorder.stop();
 
         // Step 2: Apply per agent action updates
         std::unordered_map<AbstractPosition*, std::vector<AbstractUpdate*>> tag_map_updates;
+        _run_recorder.start();
         for (auto& kv_pair : agent_action_updates) {
             AbstractAgent* agent = kv_pair.first;
             std::vector<uint32_t>& action_updates = kv_pair.second;
@@ -36,15 +40,25 @@ std::vector<uint64_t> AbstractEnv::step (const std::vector<ActionType>& actions)
                 tag_map_updates[update_pair.first].push_back(update_pair.second);
             }
         }
+        _run_recorder.stop();
 
         // Step 3: Invoke map updates
+        _run_recorder.start();
         this->getCurrentMap()->doMapUpdates(tag_map_updates);
+        _run_recorder.stop();
 
         // Step 4: Get agent rewards
         std::vector<uint64_t> agent_rewards(agent_list.size());
+        _run_recorder.start();
         for (int i = 0; i < agent_list.size(); ++i) {
             agent_rewards[i] = this->getAgentRewards(agent_list[i]);
         }
+        _run_recorder.stop();
 
         return std::move(agent_rewards);
+}
+
+void AbstractEnv::dump_data(const std::vector<std::string>& header,
+                            const std::string& filename, char mode) {
+    _run_recorder.dump_data(header, filename, mode);
 }

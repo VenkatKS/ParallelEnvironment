@@ -12,12 +12,16 @@ LOGGER_OUT_PATH = bin/logger.o
 UTILS_SRC_LIST = infra/utils.cpp
 UTILS_INC_LIST = -Iinfra/include
 
+RECORDER_SRC_LIST = infra/recorder.cpp
+RECORDER_INC_LIST = -Iinfra/include
+RECORDER_OUT = bin/recorder.o
+
 UTILS_OUT_PATH = bin/utils.o
 
 SIMPLE_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gridenv.cpp gridworld/gridagent.cpp
 SIMPLE_INC_LIST = -Igridworld/include
 
-SIMPLE_DEPS = $(LOGGER_OUT_PATH) $(UTILS_OUT_PATH) $(FRAMEWORK_OUT_PATH)
+SIMPLE_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH) $(FRAMEWORK_OUT_PATH)
 
 clean:
 	@echo Running Clean
@@ -30,7 +34,10 @@ logger:
 utils:
 	@echo Building Utility Functions
 	g++ --std=c++11 $(UTILS_INC_LIST)  -c $(UTILS_SRC_LIST) -o $(UTILS_OUT_PATH)
-framework: logger utils
+recorder:
+	@echo Building Recorder
+	g++ --std=c++11 $(RECORDER_INC_LIST)  -c $(RECORDER_SRC_LIST) -o $(RECORDER_OUT)
+framework: logger utils recorder
 	@echo Building Framework
 	g++ --std=c++11 $(FRAMEWORK_FLAGS) $(FRAMEWORK_INC_LIST) $(LOGGER_INC_LIST) $(UTILS_INC_LIST) $(FRAMEWORK_SRC_LIST) -o $(FRAMEWORK_OUT_PATH)
 	@echo Done
