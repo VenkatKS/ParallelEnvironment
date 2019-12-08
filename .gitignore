@@ -1,8 +1,4 @@
-*.pyc
-*.swp
-*.swo
-*.gch
-*.o
-python/**/*.html
-python/**/*.cpp
-cpp/bin/*
+./bin/
+better_gcc_print
+*.csv
+
