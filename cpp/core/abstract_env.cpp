@@ -150,6 +150,7 @@ std::vector<uint64_t> AbstractEnv::omp_step(const std::vector<ActionType>& actio
         // Step 4: Get agent rewards
         std::vector<uint64_t> agent_rewards(agent_list.size());
         _run_recorder.start();
+        #pragma omp parallel for
         for (int i = 0; i < agent_list.size(); ++i) {
             agent_rewards[i] = this->getAgentRewards(agent_list[i]);
         }

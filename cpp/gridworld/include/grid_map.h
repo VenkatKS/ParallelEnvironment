@@ -22,7 +22,8 @@ class GridWorldMap : public AbstractMap {
 
   public:
     /* Generic constructor for the gridworld map. */
-    GridWorldMap(uint32_t awidth, uint32_t aheight) : width(awidth), height(aheight) {} 
+    GridWorldMap(uint32_t awidth, uint32_t aheight, EnvBackend backend) : 
+        AbstractMap(backend), width(awidth), height(aheight) {} 
     ~GridWorldMap() = default;
   
     /* 

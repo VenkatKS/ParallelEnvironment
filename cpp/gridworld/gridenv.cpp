@@ -3,8 +3,8 @@
 GridEnv::GridEnv(uint32_t width, uint32_t height, uint32_t num_agents,
                  EnvBackend backend) : AbstractEnv(backend) {
   /* FIXME: Find a way to keep track of this allocation */
-  active_map = new GridWorldMap(width, height);
-  
+  active_map = new GridWorldMap(width, height, backend);
+
   for (int i = 0; i < num_agents; i++) {
     /* FIXME: Track allocation for these creations. */
 

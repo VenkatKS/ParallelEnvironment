@@ -3,13 +3,9 @@
 
 #include "abstract_map.h"
 #include "recorder.h"
+#include "common.h"
 
 using ActionType = uint32_t;
-
-enum EnvBackend {
-    SEQ,
-    OMP
-};
 
 class AbstractEnv {
   public:
