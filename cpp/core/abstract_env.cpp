@@ -77,18 +77,34 @@ std::vector<uint64_t> AbstractEnv::omp_step(const std::vector<ActionType>& actio
         std::unordered_map<AbstractAgent*, std::vector<uint32_t>> agent_action_updates;
         _run_recorder.start();
         #pragma omp parallel
-        for (int i = 0; i < agent_list.size(); ++i) {
-            const auto& agent = agent_list[i];
+        {
+            std::unordered_map<AbstractAgent*, std::vector<uint32_t>> local_updates;
 
-            const auto& updates = agent->doAction(actions[i]);
+            #pragma omp for nowait
+            // Allow agents to complete this computation and then move
+            // on to the critical section
+            for (int i = 0; i < agent_list.size(); ++i) {
+                const auto& agent = agent_list[i];
 
-            for (const auto& kv_pair : updates) {
-                AbstractAgent* affected_agent = kv_pair.first;
-                const std::vector<uint32_t>& action_list = kv_pair.second;
-                std::vector<uint32_t>& affected_list = agent_action_updates[affected_agent];
-                affected_list.insert(affected_list.end(),
-                                     action_list.begin(),
-                                     action_list.end());
+                const auto& updates = agent->doAction(actions[i]);
+                for (auto it = updates.begin(); it != updates.end(); ++it) {
+                    AbstractAgent* affected_agent = it->first;
+                    const std::vector<uint32_t>& action_list = it->second;
+                    std::vector<uint32_t>& affected_list = local_updates[affected_agent];
+                    affected_list.insert(affected_list.end(),
+                                         std::make_move_iterator(action_list.begin()),
+                                         std::make_move_iterator(action_list.end()));
+                }
+            }
+
+            #pragma omp critical
+            {
+                for (auto& local_pair : local_updates) {
+                    agent_action_updates[local_pair.first].insert(
+                            agent_action_updates[local_pair.first].begin(),
+                            std::make_move_iterator(local_pair.second.begin()),
+                            std::make_move_iterator(local_pair.second.end()));
+                }
             }
         }
         _run_recorder.stop();

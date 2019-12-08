@@ -10,7 +10,7 @@ GridEnv::GridEnv(uint32_t width, uint32_t height, uint32_t num_agents,
 
     /* Create a new agent */
     GridAgent *this_agent = new GridAgent(active_map, \
-        GridAgentOrientation::UP, 100);
+        GridAgentOrientation::UP, 100, static_cast<uint64_t>(i));
 
     /* Add the agent to the map by registering it and add it to our list. */
     active_map->RegisterAgent(this_agent, RANDOM);

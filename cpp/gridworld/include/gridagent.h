@@ -29,7 +29,7 @@ class GridAgent : public AbstractAgent {
   public:
     /* Provides the initial energies for the agents */
     GridAgent(GridWorldMap *active_map, GridAgentOrientation orientation, \
-        uint32_t default_energy);
+        uint32_t default_energy, uint64_t id);
     ~GridAgent();
     
   private:

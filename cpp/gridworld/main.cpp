@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
   else std::cout << "dump to " << filename;
   std::cout << std::endl << std::endl;
 
-  GridEnv env(width, height, num_agents);
+  GridEnv env(width, height, num_agents, backend);
 
   std::vector<uint32_t> actions(num_agents, 0);
   std::cout << "Going to invoke step" << std::endl;
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
   }
 
   if (!nodump) {
-      std::cout << "Writing out dump file" << std::endl;
+      std::cout << "Writing out dump file " << filename << std::endl;
       env.dump_data(header, filename, mode);
   }
 

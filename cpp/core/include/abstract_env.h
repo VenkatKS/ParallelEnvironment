@@ -20,6 +20,7 @@ class AbstractEnv {
     virtual uint64_t getAgentRewards(AbstractAgent *agent) = 0;
     virtual bool isTerminal() = 0;
 
+    virtual int getNumberOfAgents() { return this->getAgents().size(); }
     void dump_data(const std::vector<std::string>& header,
                    const std::string& filename, char mode);
 

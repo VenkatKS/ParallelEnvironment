@@ -3,8 +3,8 @@
 #include "logger.h"
 
 
-GridAgent::GridAgent(GridWorldMap *active_map, GridAgentOrientation default_orientation\
-    ,uint32_t default_energy) {
+GridAgent::GridAgent(GridWorldMap *active_map, GridAgentOrientation default_orientation,
+                     uint32_t default_energy, uint64_t id) : AbstractAgent(id) {
   current_map = active_map;
   current_orientation = default_orientation;
   current_energy = default_energy;
