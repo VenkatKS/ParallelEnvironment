@@ -5,7 +5,7 @@
 #include "logger.h"
 #include "battle_grid_map_updates.h"
 
-// #include "gridagent.h"
+#include "battle_grid_agent.h"
 
 #include <unordered_map>
 
@@ -122,8 +122,8 @@ void BattleGridWorldMap::RegisterAgent(AbstractAgent *agent, AgentMethod method)
 AbstractPosition *BattleGridWorldMap::getAgentMapInfo(AbstractAgent *agent)
 {
   /* Cast it into an agent of GridWorld */
-  // GridAgent *grid_ag = dynamic_cast<GridAgent *> (agent);
+  BattleGridAgent *grid_ag = dynamic_cast<BattleGridAgent *> (agent);
 
-  //return agent_to_pos[grid_ag];
+  return agent_to_pos[grid_ag];
 }
 
