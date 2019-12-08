@@ -18,10 +18,11 @@ RECORDER_OUT = bin/recorder.o
 
 UTILS_OUT_PATH = bin/utils.o
 
-SIMPLE_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gridenv.cpp gridworld/gridagent.cpp
-SIMPLE_INC_LIST = -Igridworld/include
+EXPLORATION_ENV_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gridenv.cpp gridworld/gridagent.cpp
+EXPLORATION_ENV_INC_LIST = -Igridworld/include
 
-SIMPLE_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH) $(FRAMEWORK_OUT_PATH)
+EXPLORATION_ENV_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH)  $(FRAMEWORK_OUT_PATH)
+EXPLORATION_ENV_OUT_BIN = ./bin/exploration_env.o
 
 clean:
 	@echo Running Clean
@@ -42,12 +43,13 @@ framework: logger utils recorder
 	g++ --std=c++11 $(FRAMEWORK_FLAGS) $(FRAMEWORK_INC_LIST) $(LOGGER_INC_LIST) $(UTILS_INC_LIST) $(FRAMEWORK_SRC_LIST) -o $(FRAMEWORK_OUT_PATH)
 	@echo Done
 
-simple_gridworld: logger utils framework
-	@echo Building Simple Gridworld Example
-	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(SIMPLE_INC_LIST)\
-	  $(SIMPLE_DEPS) $(SIMPLE_SRC_LIST)\
-	  -o bin/run\
+exploration_gridworld: logger utils framework
+	@echo Building Exploration Gridworld Example
+	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o bin/run $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
 
-all: simple_gridworld
+battle_gridworld: logger utils framework
+	@echo Building Battle Gridworld Example
+
+all: exploration_gridworld battle_gridworld
 
 
