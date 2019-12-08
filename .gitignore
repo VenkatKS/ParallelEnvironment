@@ -1,6 +1,8 @@
 *.pyc
 *.swp
 *.swo
-*.csv
 *.gch
 *.o
+python/**/*.html
+python/**/*.cpp
+cpp/bin/*
