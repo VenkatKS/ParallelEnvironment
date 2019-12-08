@@ -1,4 +1,5 @@
 #include "abstract_map.h"
+#include "abstract_grid_position.h"
 
 #include <algorithm>
 #include <omp.h>
@@ -82,4 +83,32 @@ void AbstractMap::doOmpMapUpdates(std::unordered_map<AbstractPosition*, std::vec
         this->doTaggedMapUpdates(data->at(i).first, *(data->at(i).second));
     }
     delete data;
+}
+
+/* FIXME: Use a tournament style algorithm to speed this up. Pending */
+AbstractAgent *AbstractMap::GetNearestNeighbor(AbstractAgent *agent) {
+  /* Do a linear scan thru the entire agent list to see the distances */
+  std::unordered_map<AbstractAgent *, AbstractPosition *>::iterator agent_it;
+
+  AbstractPosition *my_position = agent_to_pos[agent];
+
+  uint32_t current_distance = GetMaxPossibleDistance();
+  AbstractAgent *applicable_agent = nullptr;
+
+  for (agent_it = agent_to_pos.begin(); agent_it != agent_to_pos.end(); \
+      agent_it++) {
+    /* Get the position of this agent */
+    AbstractPosition *next_position = agent_it->second;
+
+    /* Get the distance */
+    AbstractDistance *this_distance = my_position->GetDistanceFrom\
+                                      (next_position);
+    if (this_distance->GetAbsolute() < current_distance) {
+      current_distance = this_distance->GetAbsolute();
+      applicable_agent = agent_it->first;
+    }
+    delete this_distance;
+  }
+
+  return applicable_agent;
 }

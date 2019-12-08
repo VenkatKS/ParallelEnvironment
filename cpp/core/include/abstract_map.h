@@ -20,6 +20,7 @@ All subclasses are required to implement virtual methods.
 #include "abstract_updates.h"
 #include "common.h"
 #include "utils.h"
+#include <limits.h>
 
 enum AgentMethod {
   RANDOM, DETERMINISTIC
@@ -109,6 +110,18 @@ class AbstractMap {
     virtual void RemoveAgentFromRecords(AbstractAgent *agent);
 
     virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos);
+    
+    /* Returns the agent that is closest to the provided agent */
+    /* 
+     *  This has to be a virtual function due to the multitude of ways to define
+     *  distance
+     */
+    virtual uint32_t GetMaxPossibleDistance() {
+      return UINT_MAX;
+    }
+
+    /* Get the closest agent to this one */
+    virtual AbstractAgent *GetNearestNeighbor(AbstractAgent *agent);
   protected:
     /* Have a mapping for each agent to its position */
     std::unordered_map<AbstractAgent *, AbstractPosition *> agent_to_pos;

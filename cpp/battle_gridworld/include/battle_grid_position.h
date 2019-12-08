@@ -2,6 +2,19 @@
 #define _BATTLE_GRID_POSITION_H
 
 #include "abstract_grid_position.h"
+#include <cstdlib>
+
+
+class BattleGridDistance : public AbstractDistance {
+  public:
+    int delta_x;
+    int delta_y;
+
+    virtual uint32_t GetAbsolute() {
+      /* Use the infinity norm */
+      return std::max(delta_x, delta_y);
+    }
+};
 
 class BattleGridPosition : public AbstractPosition {
   public:
@@ -17,6 +30,18 @@ class BattleGridPosition : public AbstractPosition {
 
       return (x == other->x && y == other->y);
     }
+
+    virtual AbstractDistance *GetDistanceFrom(AbstractPosition *pos) {
+      BattleGridPosition *my_pos = dynamic_cast<BattleGridPosition *>(pos);
+
+      /* FIXME: Register this guy */
+      BattleGridDistance *distance = new BattleGridDistance();
+      distance->delta_x = std::labs((uint32_t) (my_pos->x - x));
+      distance->delta_y = std::labs((uint32_t) (my_pos->y - y));
+      return distance;
+    }
+
+    
 };
 
 #endif

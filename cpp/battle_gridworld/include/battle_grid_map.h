@@ -19,8 +19,12 @@ class BattleGridWorldMap : public AbstractMap {
     virtual AbstractPosition *getAgentMapInfo(AbstractAgent *agent);
 
   public:
-    /* Generic constructor for the battle_gridworld map. */
-    BattleGridWorldMap(uint32_t awidth, uint32_t aheight) : width(awidth), height(aheight) {} 
+    BattleGridWorldMap (uint32_t awidth, uint32_t aheight) : \
+      BattleGridWorldMap(awidth, aheight, EnvBackend::SEQ) {} 
+
+    /* Generic constructor for the gridworld map. */
+    BattleGridWorldMap(uint32_t awidth, uint32_t aheight, EnvBackend backend) : 
+        AbstractMap(backend), width(awidth), height(aheight) {} 
     ~BattleGridWorldMap() = default;
   
     /* 
