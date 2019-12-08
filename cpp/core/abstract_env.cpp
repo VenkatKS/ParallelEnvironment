@@ -112,13 +112,32 @@ std::vector<uint64_t> AbstractEnv::omp_step(const std::vector<ActionType>& actio
         // Step 2: Apply per agent action updates
         std::unordered_map<AbstractPosition*, std::vector<AbstractUpdate*>> tag_map_updates;
         _run_recorder.start();
-        for (auto& kv_pair : agent_action_updates) {
-            AbstractAgent* agent = kv_pair.first;
-            std::vector<uint32_t>& action_updates = kv_pair.second;
+        #pragma omp parallel
+        {
+            std::unordered_map<AbstractPosition*, std::vector<AbstractUpdate*>> local_updates;
 
-            const auto map_updates = agent->doActionAgentCollate(action_updates);
-            for (const auto& update_pair : map_updates) {
-                tag_map_updates[update_pair.first].push_back(update_pair.second);
+            // Currently parallelizing over the hash table's buckets
+            #pragma omp for nowait
+            for (int i = 0; i < agent_action_updates.bucket_count(); ++i) {
+                for (auto it = agent_action_updates.begin(i); it != agent_action_updates.end(i); ++it) {
+                    AbstractAgent* agent = it->first;
+                    std::vector<uint32_t>& action_updates = it->second;
+
+                    const auto map_updates = agent->doActionAgentCollate(action_updates);
+                    for (const auto& update_pair : map_updates) {
+                        local_updates[update_pair.first].push_back(update_pair.second);
+                    }
+                }
+            }
+
+            #pragma omp critical
+            {
+                for (const auto& update_pair : local_updates) {
+                    tag_map_updates[update_pair.first].insert(
+                            tag_map_updates[update_pair.first].begin(),
+                            std::make_move_iterator(update_pair.second.begin()),
+                            std::make_move_iterator(update_pair.second.end()));
+                }
             }
         }
         _run_recorder.stop();
