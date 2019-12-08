@@ -111,6 +111,8 @@ class Agent(AbstractAgent):
                     map_actions[new_pos].append(self.active_map.PutMapUpdate(self))
                     # Delete the agent from the current location
                     map_actions[current_pos].append(self.active_map.DelMapUpdate(self))
+                else:
+                    Log.debug("invalid new map position - not generating anything")
             else:
                 raise AssertionError("An invalid action has been specified")
         return map_actions

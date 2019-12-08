@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from config import Log
+
 import time
 from collections import defaultdict
 

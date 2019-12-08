@@ -15,7 +15,7 @@ class RandomRewardGridEnv(AbstractEnv):
         for i in range(num_agents):
             self.agents.append(Agent(active_map=self.map))
             self.map.registerAgent(self.agents[-1])
-        Log.debug("New env created with agents %s" % (self.agents))
+        Log.warning("New env created with %d agents" % (len(self.agents)))
 
     def getCurrentMap(self):
         return self.map
