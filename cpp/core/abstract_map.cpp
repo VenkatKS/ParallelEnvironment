@@ -1,6 +1,7 @@
 #include "abstract_map.h"
 
 #include <algorithm>
+#include <omp.h>
 
 
 bool AbstractMap::isAgentInMap(AbstractAgent *agent) {
@@ -60,7 +61,25 @@ AbstractMap *AbstractMap::getObservation() {
 
 void AbstractMap::doMapUpdates(std::unordered_map<AbstractPosition *, std::vector<AbstractUpdate *>> list_of_updates) {
     // FIXME: This is the sequential implementation of dispatch
+    // if (_current_backend == EnvBackend::OMP) {
+    //     this->doOmpMapUpdates(list_of_updates);
+    //     return;
+    // }
+
+    // Else, do sequential implementation
     for (auto& kv_pair : list_of_updates) {
         this->doTaggedMapUpdates(kv_pair.first, kv_pair.second);
     }
+}
+
+void AbstractMap::doOmpMapUpdates(std::unordered_map<AbstractPosition*, std::vector<AbstractUpdate*>> list_of_updates) {
+    auto* data = new std::vector<std::pair<AbstractPosition*, std::vector<AbstractUpdate*>*>>();
+    for (auto& kv_pair : list_of_updates) {
+        data->push_back(std::make_pair(kv_pair.first, &kv_pair.second));
+    }
+    #pragma omp parallel shared(data)
+    for (int i = 0; i < data->size(); ++i) {
+        this->doTaggedMapUpdates(data->at(i).first, *(data->at(i).second));
+    }
+    delete data;
 }

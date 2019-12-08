@@ -18,6 +18,7 @@ All subclasses are required to implement virtual methods.
 
 #include "abstract_grid_position.h"
 #include "abstract_updates.h"
+#include "common.h"
 #include "utils.h"
 
 enum AgentMethod {
@@ -25,7 +26,6 @@ enum AgentMethod {
 };
 
 class AbstractMap {
-  private:
   public:
     /*
      * Interface supplied by subclasses for concrete map implementation.
@@ -49,6 +49,8 @@ class AbstractMap {
      *    List of implementation-defined map-update operations. It is up to the
      *    business logic to implement the updates.
      */
+    AbstractMap(EnvBackend backend) : _current_backend(backend) {}
+
     virtual void doTaggedMapUpdates(AbstractPosition *active_position, \
                             std::vector<AbstractUpdate*> map_updates) = 0;
     /*
@@ -87,10 +89,6 @@ class AbstractMap {
 
   /* Simple helper functions */
     /* ==== MEMBERS ==== */
-  protected:
-    /* Have a mapping for each agent to its position */
-    std::unordered_map<AbstractAgent *, AbstractPosition *> agent_to_pos;
-    std::unordered_map<AbstractPosition *, std::vector<AbstractAgent *> > pos_to_agents;
   public:
     /* ==== METHODS ==== */
   
@@ -111,6 +109,14 @@ class AbstractMap {
     virtual void RemoveAgentFromRecords(AbstractAgent *agent);
 
     virtual void AddAgentToRecords(AbstractAgent *agent, AbstractPosition *pos);
+  protected:
+    /* Have a mapping for each agent to its position */
+    std::unordered_map<AbstractAgent *, AbstractPosition *> agent_to_pos;
+    std::unordered_map<AbstractPosition *, std::vector<AbstractAgent *> > pos_to_agents;
+  private:
+    void doOmpMapUpdates(std::unordered_map<AbstractPosition *, std::vector<AbstractUpdate*>> list_of_updates);
+
+    EnvBackend _current_backend;
 };
 
 #endif
