@@ -73,6 +73,6 @@ battle_gridworld: framework
 
 battle: battle_gridworld
 
-all: exploration_gridworld battle_gridworld
+all: exploration_gridworld 
 
 
