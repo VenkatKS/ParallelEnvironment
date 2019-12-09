@@ -4,7 +4,7 @@
 class BattleGridMapUpdate : public AbstractUpdate {
 };
 
-class PutMapUpdates : public BattleGridMapUpdate { 
+class PutMapUpdate : public BattleGridMapUpdate { 
   public:
     uint32_t UpdateType() {
       return 0;

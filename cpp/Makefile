@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := all
 
+GLOBAL_FLAGS = -g
+
 # ==================== Framework Core Definitions ========================
 FRAMEWORK_SRC_LIST = core/abstract_agent.cpp core/abstract_map.cpp core/abstract_env.cpp
 FRAMEWORK_INC_LIST = -Icore/include
@@ -49,27 +51,27 @@ clean:
 
 logger:
 	@echo Building Logger
-	g++ --std=c++11 $(LOGGER_INC_LIST) -c $(LOGGER_SRC_LIST) -o $(LOGGER_OUT_PATH)
+	g++ --std=c++11 $(GLOBAL_FLAGS) $(LOGGER_INC_LIST) -c $(LOGGER_SRC_LIST) -o $(LOGGER_OUT_PATH)
 utils:
 	@echo Building Utility Functions
-	g++ --std=c++11 $(UTILS_INC_LIST)  -c $(UTILS_SRC_LIST) -o $(UTILS_OUT_PATH)
+	g++ --std=c++11 $(GLOBAL_FLAGS) $(UTILS_INC_LIST)  -c $(UTILS_SRC_LIST) -o $(UTILS_OUT_PATH)
 recorder:
 	@echo Building Recorder
-	g++ --std=c++11 $(RECORDER_INC_LIST)  -c $(RECORDER_SRC_LIST) -o $(RECORDER_OUT)
+	g++ --std=c++11 $(GLOBAL_FLAGS) $(RECORDER_INC_LIST)  -c $(RECORDER_SRC_LIST) -o $(RECORDER_OUT)
 framework: logger utils recorder
 	@echo Building Framework
-	g++ --std=c++11 $(FRAMEWORK_FLAGS) $(FRAMEWORK_INC_LIST) $(LOGGER_INC_LIST) $(UTILS_INC_LIST) $(FRAMEWORK_SRC_LIST) -o $(FRAMEWORK_OUT_PATH)
+	g++ --std=c++11 $(GLOBAL_FLAGS) $(FRAMEWORK_FLAGS) $(FRAMEWORK_INC_LIST) $(LOGGER_INC_LIST) $(UTILS_INC_LIST) $(FRAMEWORK_SRC_LIST) -o $(FRAMEWORK_OUT_PATH)
 	@echo Done
 
 # The make recipe for the simple exploration based gridworld
 exploration_gridworld: logger utils framework
 	@echo Building Exploration Gridworld Example
-	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o bin/run $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
+	g++ --std=c++11 $(GLOBAL_FLAGS) $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o bin/run $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
 
 # The make recipe for the more complex battle-based gridworld
 battle_gridworld: framework
 	@echo Building Battle Gridworld Example
-	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(BATTLE_ENV_INC_LIST) -o bin/run $(BATTLE_ENV_SRC_LIST) $(BATTLE_ENV_DEPS)
+	g++ --std=c++11 $(GLOBAL_FLAGS) $(BATTLE_ENV_FLAGS) $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(BATTLE_ENV_INC_LIST) -o $(BATTLE_ENV_OUT_BIN) $(BATTLE_ENV_SRC_LIST) $(BATTLE_ENV_DEPS)
 
 battle: battle_gridworld
 

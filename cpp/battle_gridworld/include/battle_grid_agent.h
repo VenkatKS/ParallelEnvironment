@@ -13,7 +13,7 @@ enum BattleGridAgentActions {
   TURN_LEFT,
   TURN_RIGHT,
   FORWARD,
-  PUSH_FORWARD,
+  PUSH_NEAREST,
   /* Add above this line */
   COUNT
 };
