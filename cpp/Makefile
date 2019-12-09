@@ -1,9 +1,15 @@
 .DEFAULT_GOAL := all
 
+ifeq (mpi,$(TYPE))
+	CXX = mpic++
+else
+	CXX = g++
+endif
+
 # ==================== Framework Core Definitions ========================
 FRAMEWORK_SRC_LIST = core/abstract_agent.cpp core/abstract_map.cpp core/abstract_env.cpp
 FRAMEWORK_INC_LIST = -Icore/include
-FRAMEWORK_FLAGS = -shared -fpic -fopenmp
+FRAMEWORK_FLAGS = -shared -fpic -fopenmp -lpthread
 FRAMEWORK_OUT_PATH = bin/framework.a
 # =========================================================================
 
@@ -49,27 +55,27 @@ clean:
 
 logger:
 	@echo Building Logger
-	g++ --std=c++11 $(LOGGER_INC_LIST) -c $(LOGGER_SRC_LIST) -o $(LOGGER_OUT_PATH)
+	$(CXX) --std=c++11 $(LOGGER_INC_LIST) -c $(LOGGER_SRC_LIST) -o $(LOGGER_OUT_PATH)
 utils:
 	@echo Building Utility Functions
-	g++ --std=c++11 $(UTILS_INC_LIST)  -c $(UTILS_SRC_LIST) -o $(UTILS_OUT_PATH)
+	$(CXX) --std=c++11 $(UTILS_INC_LIST)  -c $(UTILS_SRC_LIST) -o $(UTILS_OUT_PATH)
 recorder:
 	@echo Building Recorder
-	g++ --std=c++11 $(RECORDER_INC_LIST)  -c $(RECORDER_SRC_LIST) -o $(RECORDER_OUT)
+	$(CXX) --std=c++11 $(RECORDER_INC_LIST)  -c $(RECORDER_SRC_LIST) -o $(RECORDER_OUT)
 framework: logger utils recorder
 	@echo Building Framework
-	g++ --std=c++11 $(FRAMEWORK_FLAGS) $(FRAMEWORK_INC_LIST) $(LOGGER_INC_LIST) $(UTILS_INC_LIST) $(FRAMEWORK_SRC_LIST) -o $(FRAMEWORK_OUT_PATH)
+	$(CXX) --std=c++11 $(FRAMEWORK_FLAGS) $(FRAMEWORK_INC_LIST) $(LOGGER_INC_LIST) $(UTILS_INC_LIST) $(FRAMEWORK_SRC_LIST) -o $(FRAMEWORK_OUT_PATH)
 	@echo Done
 
 # The make recipe for the simple exploration based gridworld
 exploration_gridworld: logger utils framework
 	@echo Building Exploration Gridworld Example
-	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o bin/run $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
+	$(CXX) --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o bin/run $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
 
 # The make recipe for the more complex battle-based gridworld
 battle_gridworld: framework
 	@echo Building Battle Gridworld Example
-	g++ --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(BATTLE_ENV_INC_LIST) -o bin/run $(BATTLE_ENV_SRC_LIST) $(BATTLE_ENV_DEPS)
+	$(CXX) --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(BATTLE_ENV_INC_LIST) -o bin/run $(BATTLE_ENV_SRC_LIST) $(BATTLE_ENV_DEPS)
 
 battle: battle_gridworld
 

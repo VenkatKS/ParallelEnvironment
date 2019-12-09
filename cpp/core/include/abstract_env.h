@@ -21,11 +21,29 @@ class AbstractEnv {
                    const std::string& filename, char mode);
 
     // Returns the rewards received by the agents when invoked.
-    std::vector<uint64_t> step(const std::vector<ActionType>& actions);
+    std::vector<uint64_t> step(std::vector<ActionType>& actions);
+
+    // Cache list of agents so that we don't have to keep recreating
+    // the agent-ID map
+    std::vector<AbstractAgent*>& fetchAgents() {
+        if (_agents.size() == 0) {
+            _agents = this->getAgents();
+            for (auto& _agent : _agents) {
+                _id_to_agent[_agent->id()] = _agent;
+            }
+        }
+        return _agents;
+    }
 
   private:
-    std::vector<uint64_t> seq_step(const std::vector<ActionType>& actions);
-    std::vector<uint64_t> omp_step(const std::vector<ActionType>& actions);
+    std::vector<uint64_t> seq_step(std::vector<ActionType>& actions);
+    std::vector<uint64_t> omp_step(std::vector<ActionType>& actions);
+    std::vector<uint64_t> mpi_step(std::vector<ActionType>& actions);
+
+    std::vector<AbstractAgent*> _agents;
+    std::unordered_map<int, AbstractAgent*> _id_to_agent;
+    std::vector<int> _task_lengths;
+    std::vector<int> _displacements;
 
     EnvBackend _current_backend;
     Recorder _run_recorder;

@@ -2,6 +2,9 @@
 #include <vector>
 #include <sstream>
 
+MPIInfo selfInfo;
+MPI_Datatype MsgLongPair;
+
 RandUtils *RandUtils::my_engine = nullptr;
 
 RandUtils *RandUtils::GetEngine() {

@@ -3,9 +3,21 @@
 
 #include "logger.h"
 
+#include "mpi.h"
 #include <random>
 #include <vector>
 #include <time.h>
+
+constexpr int kMPIMasterRank = 0;
+
+struct MPIInfo {
+    int self_rank;
+    int num_tasks;
+    MPI_Status status;
+};
+
+extern MPIInfo selfInfo;
+extern MPI_Datatype MsgLongPair;
 
 class Utils {
 };

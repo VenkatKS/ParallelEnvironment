@@ -3,7 +3,8 @@
 
 enum EnvBackend {
     SEQ,
-    OMP
+    OMP,
+    OMPI
 };
 
 #endif

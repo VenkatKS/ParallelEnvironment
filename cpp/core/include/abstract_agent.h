@@ -14,7 +14,7 @@ class AbstractPosition;
 
 class AbstractAgent {
   private:
-      uint64_t _id;
+      int _id;
   protected:
 
     /* Multiple views to avoid processing */
@@ -35,8 +35,8 @@ class AbstractAgent {
      * regarding the actions that it can allow the model to instruct it
      * to perform.
      */
-    AbstractAgent(uint64_t id) : _id(id) {}
-    uint64_t id() { return _id; }
+    AbstractAgent(int id) : _id(id) {}
+    int id() { return _id; }
 
     virtual ~AbstractAgent() = default;
 
