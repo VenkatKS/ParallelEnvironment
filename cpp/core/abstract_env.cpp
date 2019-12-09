@@ -166,6 +166,7 @@ std::vector<uint64_t> AbstractEnv::omp_step(std::vector<ActionType>& actions) {
 std::vector<uint64_t> AbstractEnv::mpi_step(std::vector<ActionType>& actions) {
         // Get the actions list from the master - otherwise everyone has
         // their own set of actions, which isn't consistent
+        // This also serves as a barrier for starting the next run
         MPI_Bcast(actions.data(), actions.size(), MPI_INT, kMPIMasterRank, MPI_COMM_WORLD);
 
         const std::vector<AbstractAgent*>& agent_list = this->fetchAgents();
@@ -180,12 +181,15 @@ std::vector<uint64_t> AbstractEnv::mpi_step(std::vector<ActionType>& actions) {
         std::vector<int> mappings;
 
         _run_recorder.start();
-        {
-            std::vector<int> local_mappings;
-            const int chunkSize = (agent_list.size() + selfInfo.num_tasks - 1) / selfInfo.num_tasks;
-            const int startIdx = chunkSize * selfInfo.self_rank;
-            const int endIdx = std::min(startIdx + chunkSize, (int)agent_list.size());
+        std::vector<int> local_mappings;
+        const int chunkSize = (agent_list.size() + selfInfo.num_tasks - 1) / selfInfo.num_tasks;
+        const int startIdx = chunkSize * selfInfo.self_rank;
+        const int endIdx = std::min(startIdx + chunkSize, (int)agent_list.size());
 
+        #pragma omp parallel
+        {
+            std::vector<int> local_buffer;
+            #pragma omp for nowait
             for (int i = startIdx; i < endIdx; ++i) {
                 const auto& agent = agent_list[i];
 
@@ -193,37 +197,44 @@ std::vector<uint64_t> AbstractEnv::mpi_step(std::vector<ActionType>& actions) {
                 for (auto it = updates.begin(); it != updates.end(); ++it) {
                     AbstractAgent* affected_agent = it->first;
                     for (uint32_t x : it->second) {
-                        local_mappings.push_back((int)affected_agent->id());
-                        local_mappings.push_back((int)x);
+                        local_buffer.push_back((int)affected_agent->id());
+                        local_buffer.push_back((int)x);
                     }
                 }
             }
 
-             // Get the other processors' info
-             int local_mappings_size = local_mappings.size();
-             if (_task_lengths.size() == 0) _task_lengths.resize(selfInfo.num_tasks);
-             if (_displacements.size() == 0) _displacements.resize(selfInfo.num_tasks);
-             MPI_Allgather(&local_mappings_size, 1/*=sendcount*/, MPI_INT,
-                           _task_lengths.data(), 1/*=recvcount*/, MPI_INT, MPI_COMM_WORLD);
-
-             // Resize mappings, and compute displacements
-             int total_length = _task_lengths.front();
-             _displacements.front() = 0;
-             for (int i = 1; i < _task_lengths.size(); ++i) {
-                 total_length += _task_lengths[i];
-                 _displacements[i] = _displacements[i-1] + _task_lengths[i-1];
-             }
-             mappings.resize(total_length);
-
-             MPI_Allgatherv(local_mappings.data(), _task_lengths[selfInfo.self_rank], MPI_INT,
-                            mappings.data(), _task_lengths.data(), _displacements.data(),
-                            MPI_INT, MPI_COMM_WORLD);
-
-             for (int i = 0; i < mappings.size(); i += 2) {
-                 AbstractAgent* agent = _id_to_agent[mappings[i]];
-                 agent_action_updates[agent].push_back(mappings[i+1]);
-             }
+            #pragma omp critical
+            {
+                local_mappings.insert(local_mappings.begin(),
+                                      local_buffer.begin(),
+                                      local_buffer.end());
+            }
         }
+
+         // Get the other processors' info
+         int local_mappings_size = local_mappings.size();
+         if (_task_lengths.size() == 0) _task_lengths.resize(selfInfo.num_tasks);
+         if (_displacements.size() == 0) _displacements.resize(selfInfo.num_tasks);
+         MPI_Allgather(&local_mappings_size, 1/*=sendcount*/, MPI_INT,
+                       _task_lengths.data(), 1/*=recvcount*/, MPI_INT, MPI_COMM_WORLD);
+
+         // Resize mappings, and compute displacements
+         int total_length = _task_lengths.front();
+         _displacements.front() = 0;
+         for (int i = 1; i < _task_lengths.size(); ++i) {
+             total_length += _task_lengths[i];
+             _displacements[i] = _displacements[i-1] + _task_lengths[i-1];
+         }
+         mappings.resize(total_length);
+
+         MPI_Allgatherv(local_mappings.data(), _task_lengths[selfInfo.self_rank], MPI_INT,
+                        mappings.data(), _task_lengths.data(), _displacements.data(),
+                        MPI_INT, MPI_COMM_WORLD);
+
+         for (int i = 0; i < mappings.size(); i += 2) {
+             AbstractAgent* agent = _id_to_agent[mappings[i]];
+             agent_action_updates[agent].push_back(mappings[i+1]);
+         }
         _run_recorder.stop();
 
         // Step 2: Apply per agent action updates

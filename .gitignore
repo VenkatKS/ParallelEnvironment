@@ -1,4 +1,6 @@
 ./bin/
 better_gcc_print
 *.csv
-
+python/**/*.html
+python/**/*.cpp
+cpp/bin/*
