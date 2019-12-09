@@ -6,6 +6,8 @@ else
 	CXX = g++
 endif
 
+GLOBAL_FLAGS = -g
+
 # ==================== Framework Core Definitions ========================
 FRAMEWORK_SRC_LIST = core/abstract_agent.cpp core/abstract_map.cpp core/abstract_env.cpp
 FRAMEWORK_INC_LIST = -Icore/include
