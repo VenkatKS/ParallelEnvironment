@@ -60,8 +60,9 @@ int main(int argc, char** argv) {
   uint32_t num_steps=NUM_STEPS, print_every=PRINT_EVERY;
 
   std::string filename = "dump.csv";
+  std::string prefix = "";
 
-  while ((opt = getopt(argc, argv, "w:h:a:s:e:f:pmd")) != -1) {
+  while ((opt = getopt(argc, argv, "x:w:h:a:s:e:f:pmd")) != -1) {
       switch(opt) {
           case 'w': width = std::atoi(optarg); break;
           case 'h': height = std::atoi(optarg); break;
@@ -72,6 +73,7 @@ int main(int argc, char** argv) {
           case 'p': backend = EnvBackend::OMP; break;
           case 'm': backend = EnvBackend::OMPI; break;
           case 'd': nodump=1; break;
+          case 'x': prefix = optarg; break;
           default:
                     std::cerr << "Unknown option " << opt << std::endl;
                     exit(-1);
@@ -85,6 +87,7 @@ int main(int argc, char** argv) {
             << "k-g-" << width << "x" << height << ".csv";
       filename = fname.str();
   }
+  if (!prefix.empty()) filename = prefix + "-" + filename;
   filename = datadir + filename;
 
   const int kActionCount = GridAgentActions::COUNT;

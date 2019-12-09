@@ -1,10 +1,6 @@
 .DEFAULT_GOAL := all
 
-ifeq (mpi,$(TYPE))
-	CXX = mpic++
-else
-	CXX = g++
-endif
+CXX = mpic++
 
 GLOBAL_FLAGS = -g
 
