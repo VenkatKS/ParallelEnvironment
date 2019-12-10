@@ -35,7 +35,7 @@ EXPLORATION_ENV_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gr
 EXPLORATION_ENV_INC_LIST = -Igridworld/include
 
 EXPLORATION_ENV_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH)  $(FRAMEWORK_OUT_PATH)
-EXPLORATION_ENV_OUT_BIN = ./bin/exploration_env.o
+SIMPLE_OUT_BIN = ./bin/simple_exploration_env.o
 # ===========================================================================
 
 # ==================== Battle Environment Definitions ==================
@@ -43,7 +43,7 @@ BATTLE_ENV_SRC_LIST = battle_gridworld/main.cpp battle_gridworld/battle_map.cpp 
 BATTLE_ENV_INC_LIST = -Ibattle_gridworld/include
 
 BATTLE_ENV_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH) $(FRAMEWORK_OUT_PATH)
-BATTLE_ENV_OUT_BIN = ./bin/battle_env.o
+BATTLE_OUT_BIN = ./bin/complex_battle_env.o
 # ===========================================================================
 
 clean:
@@ -68,15 +68,17 @@ framework: logger utils recorder
 # The make recipe for the simple exploration based gridworld
 exploration_gridworld: logger utils framework
 	@echo Building Exploration Gridworld Example
-	$(CXX) --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o bin/run $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
+	$(CXX) --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(EXPLORATION_ENV_INC_LIST) -o $(SIMPLE_OUT_BIN) $(EXPLORATION_ENV_SRC_LIST) $(EXPLORATION_ENV_DEPS)
 
 # The make recipe for the more complex battle-based gridworld
 battle_gridworld: framework
 	@echo Building Battle Gridworld Example
-	$(CXX) --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(BATTLE_ENV_INC_LIST) -o bin/run $(BATTLE_ENV_SRC_LIST) $(BATTLE_ENV_DEPS)
+	$(CXX) --std=c++11 $(FRAMEWORK_INC_LIST) $(UTILS_INC_LIST) $(LOGGER_INC_LIST) $(BATTLE_ENV_INC_LIST) -o $(BATTLE_OUT_BIN) $(BATTLE_ENV_SRC_LIST) $(BATTLE_ENV_DEPS)
 
 battle: battle_gridworld
 
-all: exploration_gridworld 
+simple: exploration_gridworld
+
+all: exploration_gridworld battle_gridworld
 
 
