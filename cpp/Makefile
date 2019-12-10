@@ -35,7 +35,7 @@ EXPLORATION_ENV_SRC_LIST = gridworld/main.cpp gridworld/gridmap.cpp gridworld/gr
 EXPLORATION_ENV_INC_LIST = -Igridworld/include
 
 EXPLORATION_ENV_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH)  $(FRAMEWORK_OUT_PATH)
-SIMPLE_OUT_BIN = ./bin/simple_exploration_env.o
+SIMPLE_OUT_BIN = ./bin/simple_exploration_env
 # ===========================================================================
 
 # ==================== Battle Environment Definitions ==================
@@ -43,7 +43,7 @@ BATTLE_ENV_SRC_LIST = battle_gridworld/main.cpp battle_gridworld/battle_map.cpp 
 BATTLE_ENV_INC_LIST = -Ibattle_gridworld/include
 
 BATTLE_ENV_DEPS = $(LOGGER_OUT_PATH) $(RECORDER_OUT) $(UTILS_OUT_PATH) $(FRAMEWORK_OUT_PATH)
-BATTLE_OUT_BIN = ./bin/complex_battle_env.o
+BATTLE_OUT_BIN = ./bin/complex_battle_env
 # ===========================================================================
 
 clean:
